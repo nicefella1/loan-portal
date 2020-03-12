@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  loanUrl: 'https://creditwallet.ng/api/public/'
 };
