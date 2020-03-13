@@ -143,7 +143,9 @@
                         <nz-form-label class="float-left">DOB</nz-form-label>
                         <nz-form-control nzErrorTip="Please select your D.O.B!">
                           <nz-date-picker 
-                          [nzDisabledDate]="disabledDate" nzSize="large" formControlName="dob" (change)="onChange($event)">
+                          [nzDisabledDate]="disabledDate"
+                          nzShowToday="false"
+                          nzSize="large" formControlName="dob" (change)="onChange($event)">
                           </nz-date-picker>
                         </nz-form-control>
                       </nz-form-item>
@@ -213,7 +215,7 @@
                         <nz-form-label class="float-left">Phone Number</nz-form-label>
                         <nz-form-control nzHasFeedback nzErrorTip="Please input your Phone Number!">
                           <input nzSize="large" type="number" formControlName="telephone" nz-input
-                            placeholder="Phone Number" />
+                            placeholder="Phone Number"/>
                         </nz-form-control>
                       </nz-form-item>
                     </div>
@@ -223,7 +225,7 @@
                       <nz-form-item>
                         <nz-form-label class="float-left">House Address</nz-form-label>
                         <nz-form-control nzHasFeedback nzErrorTip="Please enter your Home address!">
-                          <textarea nz-input rows="2" formControlName="house_address"
+                          <textarea nz-input rows="2" [nzAutosize]="{ minRows: 2, maxRows: 3 }" formControlName="house_address"
                             placeholder="Home Address"></textarea>
                         </nz-form-control>
                       </nz-form-item>
@@ -295,9 +297,23 @@
                     <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" nzOffset="0">
                       <nz-form-item>
                         <nz-form-label class="float-left">Account Number</nz-form-label>
-                        <nz-form-control nzHasFeedback nzErrorTip="Please input your Account Number!">
-                          <input nzSize="large" type="number" formControlName="salary_bank_account" nz-input
+                        <nz-form-control nzHasFeedback [nzErrorTip]="passwordErrorTpl!">
+                          <input nzSize="large" type="text" name="salary_bank_account" formControlName="salary_bank_account" nz-input
                             placeholder="Account Number" />
+                            <ng-template #passwordErrorTpl let-control>
+                              <ng-container *ngIf="control.hasError('required')">
+                                Please enter your account number!
+                              </ng-container>
+                              <ng-container *ngIf="control.hasError('minlen')">
+                                Account Number should be 10 characters!
+                              </ng-container>
+                              <ng-container *ngIf="control.hasError('maxlen')">
+                                Account Number should be 10 characters!
+                              </ng-container>
+                              <ng-container *ngIf="control.hasError('invalid')">
+                                Invalid Account Number
+                              </ng-container>
+                            </ng-template>
                         </nz-form-control>
                       </nz-form-item>
                     </div>
@@ -312,10 +328,10 @@
                 <nz-card>
                     <ng-container class="animated fadeIn" *ngIf="applicationSuccess; else loanDetails">
                         <nz-card class="success-card">
-                            <i nz-icon [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#52c41a'"></i>
+                            <i nz-icon [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#f56b2a'"></i>
 
                          <span class="d-block mt-2">
-                            Loan application form successfully submitted!
+                          Loan Application submitted successfully. Kindly await a response from our team!
                          </span>
                           </nz-card>
                     </ng-container>

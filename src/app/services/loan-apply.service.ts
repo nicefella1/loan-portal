@@ -16,4 +16,8 @@ export class LoanApplyService {
   loanApply(loandetails){
     return this.http.post(`${environment.loanUrl}apply`, loandetails);
   }
+
+  verifyAccountDetails(bankcode, accountnumber) {
+    return this.http.post(`${environment.loanUrl}suggestion/start`, {bankcode, accountnumber});
+  }
 }
