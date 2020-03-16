@@ -51,7 +51,7 @@ export class ApplyComponent implements OnInit {
     }
   }
   ngOnInit(): void {
-    this.current = 2;
+    // this.current = 2;
     this.startForm = this.fb.group({
       amount: [this.amount, [this.confirmValidator]],
       tenor: [null, [Validators.required]],

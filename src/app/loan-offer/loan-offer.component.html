@@ -1,1 +1,339 @@
-<p>loan-offer works!</p>
+<nz-layout>
+    <nz-header class="d-flex">
+      <a class="logo">
+        <img src="../../assets/cwlogo.png" alt="" class="mr-1">
+        <strong class="cw_title">CreditWallet</strong>
+      </a>
+      <div class="ml-auto d-flex flex-md-column justify-content-center align-items-md-end align-items-center">
+          <p class="no-margin mr-1 line-height-1 text-right">
+            Existing Customer?
+          </p>
+          <button nz-button nzSize="small" class="ml-1" nzType="primary">
+            Click Here
+          </button>
+        </div>
+    </nz-header>
+    <nz-content class="mt-5 mb-3 container">
+        <h1 class="text-pry font-bold text-center mb-2 mt-3">Loan Application Form</h1>
+      <div class="inner-content">
+        <nz-steps nzSize="small" [nzCurrent]="current" [nzDirection]="direction">
+          <nz-step nzTitle="Loan Offer"></nz-step>
+          <nz-step nzTitle="Acceptance"></nz-step>
+          <nz-step nzTitle="Id" nzDescription="Upload"></nz-step>
+          <nz-step nzTitle="Passport" nzDescription="Upload" ></nz-step>
+          <nz-step nzTitle="Authorization"></nz-step>
+          <nz-step nzTitle="Confirmation"></nz-step>
+        </nz-steps>
+
+         <div class="steps-content">
+          <ng-container *ngIf="current === 0">
+            <div nz-row nzType="flex" nzJustify="center">
+                <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="20" nzXl="20" nzOffset="0">
+                  <h4 class="font-bold text-pry">We are pleased to inform you that your loan request has been approved under the following terms and conditions</h4>
+                  <ng-container>
+                      <nz-card>
+                          <nz-table nzTemplateMode nzBordered>
+                              <tbody>
+                                <tr>
+                                    <td class="font-bold">Borrower</td>
+                                    <td>Michael Ashefor</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="font-bold">Borrower Employer</td>
+                                    <td>Credit Wallet</td>
+                                  </tr>
+                                <tr>
+                                  <td class="font-bold">Loan Amount</td>
+                                  <td>₦ 100,250.00</td>
+                                </tr>
+                                <tr>
+                                  <td class="font-bold">Duration</td>
+                                  <td>12 Months</td>
+                                </tr>
+                                <tr>
+                                  <td class="font-bold">Monthly Repayment</td>
+                                  <td>₦ 1,250.00</td>
+                                </tr>
+                                <tr>
+                                  <td class="font-bold">Interest rate</td>
+                                  <td>7.5% per month (i.e. 0.25% per day prorated)</td>
+                                </tr>
+                                <tr>
+                                  <td class="font-bold">Number of repaayments</td>
+                                  <td>12</td>
+                                </tr>
+                                <tr>
+                                  <td class="font-bold">Insurance</td>
+                                  <td>₦ 3,000.00</td>
+                                </tr>
+                                <tr>
+                                  <td class="font-bold">Disbursement Fee</td>
+                                  <td>₦ 1,250.00</td>
+                                </tr>
+                              </tbody>
+                            </nz-table>
+                            <span class="font-bold mt-2 d-block">
+                                By Clicking Continue, I, Michael Ashefor accept the Credit Offer with a full understanding of the Loans <a href="">Terms and Conditions</a>
+                            </span>
+                        </nz-card>
+                  </ng-container>
+                </div>
+              </div> 
+        </ng-container>
+          <ng-container *ngIf="current === 1">
+              <div nz-row nzType="flex" nzJustify="center">
+              <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="14" nzXl="14" nzOffset="0">
+                <form nz-form [formGroup]="bankAcountForm" (ngSubmit)="verifyBankAccount()">
+                  <h4 class="font-bold text-pry">To proceed please provide details of your preferred account to receive your funds</h4>
+                  <div nz-row nzGutter="16">
+                    <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" nzOffset="0">
+                      <nz-form-item>
+                        <nz-form-label class="float-left">Salary Bank Name</nz-form-label>
+                        <nz-form-control nzErrorTip="Please select your Bank!">
+                          <nz-select nzAllowClear nzSize="large" formControlName="salary_bank_name" class="title-select"
+                            nzPlaceHolder="Salary Bank Name">
+                            <nz-option *ngFor="let bank of banks" [nzLabel]="bank.name" [nzValue]="bank.bankcode">
+                            </nz-option>
+                          </nz-select>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                    <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" nzOffset="0">
+                      <nz-form-item>
+                        <nz-form-label class="float-left">Account Number</nz-form-label>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="passwordErrorTpl!">
+                          <input nzSize="large" type="text" name="salary_bank_account" formControlName="salary_bank_account" nz-input
+                            placeholder="Account Number" />
+                            <ng-template #passwordErrorTpl let-control>
+                              <ng-container *ngIf="control.hasError('required')">
+                                Please enter your account number!
+                              </ng-container>
+                              <ng-container *ngIf="control.hasError('minlen')">
+                                Account Number should be 10 characters!
+                              </ng-container>
+                              <ng-container *ngIf="control.hasError('maxlen')">
+                                Account Number should be 10 characters!
+                              </ng-container>
+                              <ng-container *ngIf="control.hasError('invalid')">
+                                Invalid Account Number
+                              </ng-container>
+                            </ng-template>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div nz-row nzType="flex" nzJustify="center">
+              <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="20" nzXl="20" nzOffset="0">
+                <h2 class="font-bold text-pry">We are pleased to inform you that your loan request has been approved under the following terms and conditions</h2>
+                <ng-container *ngIf="loanBreakdown">
+                    <nz-card>
+                        <nz-table nzTemplateMode nzBordered>
+                            <tbody>
+                              <tr>
+                                <td class="font-bold">Amount</td>
+                                <td>{{loanBreakdown.loan_amount | currency: '₦'}}</td>
+                              </tr>
+                              <tr>
+                                <td class="font-bold">Duration</td>
+                                <td>{{loanBreakdown.loanTenor}} Months</td>
+                              </tr>
+                              <tr>
+                                <td class="font-bold">Monthly Repayment</td>
+                                <td>{{loanBreakdown.monthlyrepayment | currency: '₦'}}</td>
+                              </tr>
+                              <tr>
+                                <td class="font-bold">Loan Start Date</td>
+                                <td>{{loanBreakdown.startdate}}</td>
+                              </tr>
+                              <tr>
+                                <td class="font-bold">Loan End Date</td>
+                                <td>{{loanBreakdown.expectedenddate | date}}</td>
+                              </tr>
+                              <tr>
+                                <td class="font-bold">Interest per day</td>
+                                <td>0.25%</td>
+                              </tr>
+                            </tbody>
+                          </nz-table>
+                          <span class="font-bold mt-2 d-block">
+                            By clicking Start Application, I consent to Credit Wallet obtaining information from relevant third
+                            parties as may be necessary, on my employment details, salary payment, loans and other related data,
+                            to make a decision on my loan application. I also consent to the loan amounts being deducted from my
+                            salary at source before credit to my account and any outstanding loans being recovered automatically
+                            from any other accounts linked to me in the case of default
+                          </span>
+                      </nz-card>
+                </ng-container>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="current === 2">
+            <div nz-row nzType="flex" nzJustify="center">
+              <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="14" nzXl="14" nzOffset="0">
+
+                <form nz-form>
+                  <h4 class="font-bold text-pry">
+                    Please upload a copy of a valid identification document (Driver’s Licence, International Passport, National ID, Voter’s or Staff ID)
+                  </h4>
+                  <div nz-row nzGutter="16" nzJustify="center">
+                    <div nz-col class="gutter-row w-100" nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="8" nzOffset="0" >
+                        <nz-form-item class="mt-5">
+                            <nz-upload nzAction="https://jsonplaceholder.typicode.com/posts/">
+                                <button nzSize="large" nz-button><i nz-icon nzType="upload"></i><span>Select File</span></button>
+                              </nz-upload>
+                        </nz-form-item>
+                      </div>
+                  </div>
+                  <small>
+                    You can skip this step and send your identification document via WhatsApp to 07085698828 or email to support@creditwallet.ng
+                  </small>
+                </form>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="current === 3">
+            <div nz-row nzType="flex" nzJustify="center">
+              <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="14" nzXl="14" nzOffset="0">
+
+                <form nz-form>
+                  <h4 class="font-bold text-pry">
+                    Please select a copy of your passport photograph and upload
+                  </h4>
+                  <div nz-row nzGutter="16">
+                    <div nz-col class="gutter-row w-100" nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="8" nzOffset="0">
+                        <nz-form-item class="mt-5">
+                            <nz-upload nzAction="https://jsonplaceholder.typicode.com/posts/">
+                                <button nzSize="large" nz-button><i nz-icon nzType="upload"></i><span>Select File</span></button>
+                              </nz-upload>
+                        </nz-form-item>
+                      </div>
+                  </div>
+                  <small>
+                    You can skip this step and send your identification document via WhatsApp to 07085698828 or email to support@creditwallet.ng
+                  </small>
+                </form>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="current === 4">
+            <div nz-row nzType="flex" nzJustify="center">
+              <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="14" nzXl="14" nzOffset="0">
+
+                <form nz-form [formGroup]="authorizationForm" (ngSubmit)="authorizeRequest()">
+                  <h4 class="font-bold text-pry">
+                    Please use the code that was sent to your email or phone number to authorize the transaction</h4>
+                  <div nz-row nzGutter="16">
+                    <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" nzOffset="0">
+                      <nz-form-item>
+                        <nz-form-label class="float-left">Email</nz-form-label>
+                        <nz-form-control nzHasFeedback [nzErrorTip]="emailErrorTpl">
+                          <input nzSize="large" type="email" formControlName="email" nz-input placeholder="Email" />
+                          <ng-template #emailErrorTpl let-control>
+                            <ng-container *ngIf="control.hasError('email')">
+                              The input is not valid E-mail!
+                            </ng-container>
+                            <ng-container *ngIf="control.hasError('required')">
+                              Please input your E-mail!
+                            </ng-container>
+                          </ng-template>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                    <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" nzOffset="0">
+                      <nz-form-item>
+                        <nz-form-label class="float-left">Authorization Code</nz-form-label>
+                        <nz-form-control nzHasFeedback nzErrorTip="Please input Authorization Code!">
+                          <input nzSize="large" type="number" formControlName="auth_code" nz-input
+                            placeholder="Authorization Code"/>
+                        </nz-form-control>
+                      </nz-form-item>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="current === 5">
+            <div nz-row nzType="flex" nzJustify="center">
+              <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="20" nzXl="20" nzOffset="0">
+                <nz-card>
+                    <!-- <ng-container class="animated fadeIn" *ngIf="applicationSuccess; else loanDetails">
+                        <nz-card class="success-card">
+                            <i nz-icon [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#f56b2a'"></i>
+
+                         <span class="d-block mt-2">
+                          Loan Application submitted successfully. Kindly await a response from our team!
+                         </span>
+                          </nz-card>
+                    </ng-container> -->
+                    <ng-container>
+                        <div class="mt-1">
+                            <h4 class="text-left font-bold text-pry">Kindly confirm the acceptance of your loan details below
+                            </h4>
+                            <nz-table nzTemplateMode nzBordered>
+                                <tbody>
+                                  <tr>
+                                      <td class="font-bold">Borrower</td>
+                                      <td>Michael Ashefor</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="font-bold">Borrower Employer</td>
+                                      <td>Credit Wallet</td>
+                                    </tr>
+                                  <tr>
+                                    <td class="font-bold">Loan Amount</td>
+                                    <td>₦ 100,250.00</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="font-bold">Duration</td>
+                                    <td>12 Months</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="font-bold">Monthly Repayment</td>
+                                    <td>₦ 1,250.00</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="font-bold">Interest rate</td>
+                                    <td>7.5% per month (i.e. 0.25% per day prorated)</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="font-bold">Number of repaayments</td>
+                                    <td>12</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="font-bold">Insurance</td>
+                                    <td>₦ 3,000.00</td>
+                                  </tr>
+                                  <tr>
+                                    <td class="font-bold">Disbursement Fee</td>
+                                    <td>₦ 1,250.00</td>
+                                  </tr>
+                                </tbody>
+                              </nz-table>
+                          </div>
+                     </ng-container>
+                </nz-card>
+              </div>
+            </div>
+
+          </ng-container>
+        </div>
+        <div class="steps-action d-flex flex-sm-column justify-content-between">
+          <button nz-button nzSize="large" nzType="default" (click)="pre()" *ngIf="current > 0">
+            <i nz-icon nzType="left"></i>
+            <span>Previous</span>
+          </button>
+          <button class="mt-sm-2" nz-button [nzLoading]="isLoading" nzSize="large" nzType="default" (click)="next()" *ngIf="current < 5">
+            <span>{{current === 1? 'Start Application' : current === 2? 'Skip' : current === 3? 'Skip': 'Continue'}}</span>
+            <i nz-icon nzType="right"></i>
+          </button>
+          <button class="mt-sm-2" nz-button [nzLoading]="isLoading" nzSize="large" nzType="primary" (click)="done()" *ngIf="current === 5">
+            <span>Confirm</span>
+          </button>
+        </div>
+      </div>
+    </nz-content>
+  </nz-layout>
