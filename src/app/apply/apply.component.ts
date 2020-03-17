@@ -51,7 +51,6 @@ export class ApplyComponent implements OnInit {
     }
   }
   ngOnInit(): void {
-    // this.current = 2;
     this.startForm = this.fb.group({
       amount: [this.amount, [this.confirmValidator]],
       tenor: [null, [Validators.required]],
@@ -63,6 +62,7 @@ export class ApplyComponent implements OnInit {
       dob: [null, [Validators.required]],
       gender: [null, [Validators.required]],
       title: [null, [Validators.required]],
+      referral: [null]
     });
 
     this.contactForm = this.fb.group({
@@ -75,7 +75,7 @@ export class ApplyComponent implements OnInit {
 
     this.workForm = this.fb.group({
       place_of_work: [null, [Validators.required]],
-      ippisnumber: [null, [Validators.required]],
+      ippisnumber: [null],
       salary_bank_name: [null, [Validators.required]],
       salary_bank_account: [null, [this.confirmAcctNumLengthValidator]],
     });
@@ -84,7 +84,9 @@ export class ApplyComponent implements OnInit {
   disabledDate = (current: Date): boolean => {
     return differenceInCalendarDays(current, this.minDate) > 0;
   }
-
+  editInfo(page: number) {
+    this.current = page;
+  }
   pre(): void {
     this.current -= 1;
   }
@@ -111,13 +113,11 @@ export class ApplyComponent implements OnInit {
       this.collectContactlInfo();
       this.current += 1;
     } else if (this.current === 4) {
-      console.log(this.workForm.get('salary_bank_account').value);
       this.submitWorkForm();
       if (this.workForm.invalid) {
         return;
       }
       this.collectEmploymentlInfo();
-      this.current += 1;
     } else {
       this.current += 1;
     }
@@ -131,10 +131,8 @@ export class ApplyComponent implements OnInit {
     this.service.calcRepayment(amount, tenor).subscribe((data: any) => {
       this.isLoading = false;
       this.loadingBar.complete();
-      console.log(data);
       if (data.status === 'success') {
         this.loanBreakdown = { ...data, loan_amount: amount, loanTenor: tenor };
-        console.log(this.loanBreakdown);
         this.current += 1;
       } else {
         this.message.error(data.message);
@@ -149,16 +147,23 @@ export class ApplyComponent implements OnInit {
     const { firstname, lastname, gender,
       title, email,
       telephone, house_address, city, state, place_of_work,
-      ippisnumber, salary_bank_account, salary_bank_name, loan_amount } = this.fullApplicationDetails;
-    const loan = {
+      ippisnumber, salary_bank_account, salary_bank_name, loan_amount, } = this.fullApplicationDetails;
+    const referral = this.personalForm.get('referral').value;
+    const loanwithoutReferral  = {
       firstname, lastname, gender,
       title, email,
       telephone, house_address, city, state, place_of_work,
       ippisnumber, salary_bank_account, salary_bank_name, loan_amount,
       monthly_repayment: this.fullApplicationDetails.monthlyrepayment,
       tenor: this.fullApplicationDetails.loanTenor,
-      dob: this.fullApplicationDetails.dob.toDateString()
+      dob: this.fullApplicationDetails.dob.toDateString(),
     };
+    let loan;
+    if (referral) {
+      loan = {...loanwithoutReferral, referral_code: referral};
+    } else {
+      loan = loanwithoutReferral;
+    }
     this.isLoading = true;
     this.loadingBar.start();
     this.service.loanApply(loan).subscribe((data: any) => {
@@ -182,14 +187,15 @@ export class ApplyComponent implements OnInit {
     return foundbank.name;
   }
   collectPersonalInfo() {
-    // console.log(this.personalForm.value);
     this.fullApplicationDetails = { ...this.fullApplicationDetails, ...this.personalForm.value };
   }
   collectContactlInfo() {
-    // console.log(this.contactForm.value);
     this.fullApplicationDetails = { ...this.fullApplicationDetails, ...this.contactForm.value };
   }
-
+customValidator = (control: FormControl) =>
+new Observable((observer: Observer<ValidationErrors | null>) => {
+  observer.next({ error: true, invalid: true });
+})
   invalidAcctAsyncValidator = (control: FormControl) =>
     new Observable((observer: Observer<ValidationErrors | null>) => {
       const value = control.value.toString();
@@ -199,11 +205,10 @@ export class ApplyComponent implements OnInit {
         const bankcode = this.workForm.get('salary_bank_name').value;
         const accountnumber = this.workForm.get('salary_bank_account').value;
         this.service.verifyAccountDetails(bankcode, accountnumber).subscribe((data: any) => {
-          console.log(data);
           if (data.status === 'success') {
             observer.next(null);
           } else {
-            this.message.error(data.message)
+            this.message.error(data.message);
             observer.next({ error: true, invalid: true });
           }
           observer.complete();
@@ -213,8 +218,23 @@ export class ApplyComponent implements OnInit {
 
 
   collectEmploymentlInfo() {
-    this.fullApplicationDetails = { ...this.fullApplicationDetails, ...this.workForm.value, ...this.loanBreakdown };
-    console.log(this.fullApplicationDetails);
+    const bankcode = this.workForm.get('salary_bank_name').value;
+    const accountnumber = this.workForm.get('salary_bank_account').value;
+    this.loadingBar.start();
+    this.isLoading = true;
+    this.service.verifyAccountDetails(bankcode, accountnumber).subscribe((data: any) => {
+      this.loadingBar.complete();
+      this.isLoading = false;
+      if (data.status === 'success') {
+            this.current += 1;
+            this.fullApplicationDetails = { ...this.fullApplicationDetails, ...this.workForm.value, ...this.loanBreakdown };
+          } else {
+            this.message.error(data.message);
+          }
+        }, err => {
+          this.loadingBar.complete();
+          this.isLoading = false;
+        });
   }
 
   format(valString) {
@@ -305,7 +325,6 @@ export class ApplyComponent implements OnInit {
     this.startForm.patchValue({ amount: inputvalue });
   }
   onChange(result: Date): void {
-    console.log('onChange: ', result);
   }
 
 }

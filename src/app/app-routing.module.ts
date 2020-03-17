@@ -4,17 +4,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'apply',
+    path: '',
     loadChildren: () => import('./apply/apply.module').then(m => m.ApplyModule)
   },
   {
-    path: 'offerdetails',
+    path: 'offerletter/:id',
     loadChildren: () => import('./loan-offer/loan-offer.module').then(m => m.LoanOfferModule)
   }
 ];
 
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }
+export const routing = RouterModule.forRoot(routes, {useHash: true}); 
