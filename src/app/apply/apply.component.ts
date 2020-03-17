@@ -67,7 +67,7 @@ export class ApplyComponent implements OnInit {
 
     this.contactForm = this.fb.group({
       email: [null, [Validators.email, Validators.required]],
-      telephone: [null, [Validators.required]],
+      telephone: [null, [this.confirmPhoneValidator]],
       house_address: [null, [Validators.required]],
       city: [null, [Validators.required]],
       state: [null, [Validators.required]],
@@ -300,6 +300,15 @@ new Observable((observer: Observer<ValidationErrors | null>) => {
       return { minAmt: true, error: true };
     } else if (val > 1000000) {
       return { maxAmt: true, error: true };
+    }
+    return {};
+  }
+
+  confirmPhoneValidator = (control: FormControl): { [s: string]: boolean } => {
+    if (!control.value) {
+      return { error: true, required: true };
+    } else if (isNaN(control.value)) {
+      return { invalidnum: true, error: true };
     }
     return {};
   }

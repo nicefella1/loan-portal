@@ -224,9 +224,17 @@
                     <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" nzOffset="0">
                       <nz-form-item>
                         <nz-form-label class="float-left">Phone Number</nz-form-label>
-                        <nz-form-control nzHasFeedback nzErrorTip="Please input your Phone Number!">
-                          <input nzSize="large" type="number" formControlName="telephone" nz-input
+                        <nz-form-control nzHasFeedback [nzErrorTip]="telephoneErrorTpl">
+                          <input nzSize="large" type="text" pattern="[0-9]*" formControlName="telephone" nz-input
                             placeholder="Phone Number" />
+                            <ng-template #telephoneErrorTpl let-control>
+                              <ng-container *ngIf="control.hasError('required')">
+                                Please input your Phone Number!
+                              </ng-container>
+                              <ng-container *ngIf="control.hasError('invalidnum')">
+                                Invalid Phone Number
+                              </ng-container>
+                            </ng-template>
                         </nz-form-control>
                       </nz-form-item>
                     </div>
