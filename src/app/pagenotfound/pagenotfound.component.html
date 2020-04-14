@@ -1,4 +1,3 @@
-<ngx-loading-bar color ="#0A2E65"></ngx-loading-bar>
 <nz-layout>
     <nz-header class="d-flex">
       <a class="logo">
@@ -15,6 +14,10 @@
       </div>
     </nz-header>
     <nz-content class="mt5 mb-3 container">
-        <router-outlet></router-outlet>
+        <div class="nofound_wrapper">
+            <span class="very-large-font text-pry">404</span>
+            <span class="large-font">Page not found or has been moved</span>
+            <a [routerLink]="['/']">Go home</a>
+          </div>
     </nz-content>
   </nz-layout>

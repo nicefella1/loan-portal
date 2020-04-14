@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
 
 nz-layout {
-  min-height: 100vh;
+//   height: 100vh;
 //   overflow: auto;
 background-color: #fafafa;
 //   font-family: 'Lato', sans-serif;
@@ -109,6 +109,9 @@ background-color: #fafafa;
     font-size: 5rem;
   }
 
+  .success-card .anticon {
+    font-size: 5rem;
+  }
 }
 
 

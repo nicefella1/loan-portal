@@ -16,6 +16,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { Ng5SliderModule } from 'ng5-slider';
 
 
 @NgModule({
@@ -38,6 +39,7 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
     NzTableModule,
     NzUploadModule,
     FormsModule,
+    Ng5SliderModule,
     ReactiveFormsModule,
   ], exports: [
     NzStepsModule,
@@ -56,6 +58,7 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
     NzTableModule,
     NzUploadModule,
     FormsModule,
+    Ng5SliderModule,
     ReactiveFormsModule,
   ]
 })

@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, OnChanges, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { tenors } from '../duration';
 import { banks } from '../banks';
@@ -8,6 +8,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import * as differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
 import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Observable, Observer } from 'rxjs';
+import { Options, LabelType } from 'ng5-slider';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -35,9 +37,39 @@ export class ApplyComponent implements OnInit {
   DECIMAL_SEPARATOR = '.';
   GROUP_SEPARATOR = ',';
   applicationSuccess: boolean;
-
+  falseAutomate: boolean;
+  automate: boolean;
+  loanamount: number = 0;
+  durationValue;
+  options: Options = {
+    floor: 20000,
+    ceil: this.loanamount,
+    step: 10000,
+    showSelectionBar: true,
+    selectionBarGradient: {
+      from: '#f56b2a',
+      to: '#f56b2a'
+    },
+    getPointerColor: (value: number): string => {
+      return '#f56b2a';
+    },
+    translate: (value: number, label: LabelType): string => {
+      return '₦' + value;
+    }
+  };
+  actualtenor: number;
+  insurance: number;
+  disbursementfees: number;
+  interest: number;
+  monthlyrepayment: number;
+  verification: any;
+  loans: any;
+  salaryhistory: any;
+  loanhistory: any;
+  loanresult: any;
+  automateDetails: boolean;
   constructor(private fb: FormBuilder, private service: LoanApplyService,
-              private message: NzMessageService, private loadingBar: LoadingBarService) {
+              private message: NzMessageService, private loadingBar: LoadingBarService, private router: Router) {
     this.getScreenSize();
   }
   @HostListener('window:resize', ['$event'])
@@ -80,7 +112,56 @@ export class ApplyComponent implements OnInit {
       salary_bank_account: [null, [this.confirmAcctNumLengthValidator]],
     });
   }
+  onUserChange(eve) {
+    console.log(eve.value);
+  }
+  setLoanRepayment() {
+    const interestperday = 0.0025 * this.actualtenor;
+    this.insurance = 0.03 * this.loanamount;
+    this.disbursementfees = 1250;
+    this.interest = interestperday * this.loanamount;
+    this.monthlyrepayment = (this.interest + this.loanamount + this.insurance + this.disbursementfees) / this.durationValue;
 
+    console.log(interestperday);
+  }
+  changeduration(value) {
+    console.log(value);
+    if (value) {
+    if (confirm('Are you sure you want to change the duration')) {
+       this.durationValue = value;
+       this.setDuration(this.durationValue);
+     }
+   }
+  }
+
+  setDuration(duration) {
+    const json = {
+      tenor: duration,
+      amount: this.loanamount
+    };
+
+    this.loadingBar.start();
+    this.service.calculaterepayment(json)
+      .subscribe((data: any) => {
+        this.loadingBar.stop();
+
+        console.log(data);
+        if (data.status === 'success') {
+          this.monthlyrepayment = data.monthlyrepayment;
+
+        } else {
+          this.message.error(data.message);
+        }
+      },
+        (error) => {
+          this.loadingBar.stop();
+          console.log(error);
+          this.message.error('Network error. Please try again');
+        }
+      );
+
+
+  }
   disabledDate = (current: Date): boolean => {
     return differenceInCalendarDays(current, this.minDate) > 0;
   }
@@ -130,6 +211,7 @@ export class ApplyComponent implements OnInit {
     this.loadingBar.start();
     this.service.calcRepayment(amount, tenor).subscribe((data: any) => {
       this.isLoading = false;
+      console.log(data)
       this.loadingBar.complete();
       if (data.status === 'success') {
         this.loanBreakdown = { ...data, loan_amount: amount, loanTenor: tenor };
@@ -138,6 +220,7 @@ export class ApplyComponent implements OnInit {
         this.message.error(data.message);
       }
     }, error => {
+      console.log(error)
       this.loadingBar.complete();
       this.isLoading = false;
       this.message.error('Error connecting. Please try again');
@@ -149,7 +232,7 @@ export class ApplyComponent implements OnInit {
       telephone, house_address, city, state, place_of_work,
       ippisnumber, salary_bank_account, salary_bank_name, loan_amount, } = this.fullApplicationDetails;
     const referral = this.personalForm.get('referral').value;
-    const loanwithoutReferral  = {
+    const loanwithoutReferral = {
       firstname, lastname, gender,
       title, email,
       telephone, house_address, city, state, place_of_work,
@@ -160,18 +243,26 @@ export class ApplyComponent implements OnInit {
     };
     let loan;
     if (referral) {
-      loan = {...loanwithoutReferral, referral_code: referral};
+      loan = { ...loanwithoutReferral, referral_code: referral };
     } else {
       loan = loanwithoutReferral;
     }
     this.isLoading = true;
     this.loadingBar.start();
+    console.log(loan)
     this.service.loanApply(loan).subscribe((data: any) => {
+      console.log(data);
       this.isLoading = false;
       this.loadingBar.complete();
       if (data.status === 'success') {
         this.applicationSuccess = true;
-        this.message.success(data.message);
+        if (data.returnstatus === false) {
+          this.message.success(data.message);
+          this.falseAutomate = true;
+        } else {
+          this.automate = true;
+          this.automateFunds(data.id);
+        }
       } else {
         this.message.error(data.message);
       }
@@ -182,6 +273,44 @@ export class ApplyComponent implements OnInit {
     });
   }
 
+  automateFunds(loanid) {
+    this.loadingBar.start();
+    this.service.automateOffer(loanid).subscribe((data: any) => {
+      console.log(data);
+      this.loadingBar.complete();
+      if (data.status === 'success' && data.returnstatus === true) {
+        this.automateDetails = true;
+        // this.message.success(data.message);
+        sessionStorage.setItem('loanDetails', JSON.stringify(data));
+        this.service.loanOfferCache.next(data);
+        this.router.navigate([`/offer/${data.loan.id}`]);
+        this.loans = data;
+        this.salaryhistory = data.salaryhistory;
+        this.loanhistory = data.loanhistory;
+        this.verification = data.verification;
+        window.localStorage.setItem('emailaddress', this.loans.loan.email);
+        window.localStorage.setItem('firstname', this.loans.loan.firstname);
+        window.localStorage.setItem('lastname', this.loans.loan.lastname);
+        this.loanamount = data.loanamount;
+        this.durationValue = data.duration;
+        this.loanresult = data.loanresult;
+        this.actualtenor = this.loanresult.actualtenor;
+        const newOptions = Object.assign({}, this.options);
+        newOptions.ceil = data.loanamount;
+        this.options = newOptions;
+        this.setLoanRepayment();
+      } else if (data.status === 'success' && data.returnstatus === false) {
+        this.automate = false;
+        this.falseAutomate = true;
+      } else {
+        this.message.error(data.message);
+      }
+    }, error => {
+      this.isLoading = false;
+      this.loadingBar.complete();
+      this.message.error('Error connecting. Please try again');
+    });
+  }
   getBankName(value) {
     const foundbank = banks.find(bank => bank.bankcode === value);
     return foundbank.name;
@@ -192,10 +321,10 @@ export class ApplyComponent implements OnInit {
   collectContactlInfo() {
     this.fullApplicationDetails = { ...this.fullApplicationDetails, ...this.contactForm.value };
   }
-customValidator = (control: FormControl) =>
-new Observable((observer: Observer<ValidationErrors | null>) => {
-  observer.next({ error: true, invalid: true });
-})
+  customValidator = (control: FormControl) =>
+    new Observable((observer: Observer<ValidationErrors | null>) => {
+      observer.next({ error: true, invalid: true });
+    })
   invalidAcctAsyncValidator = (control: FormControl) =>
     new Observable((observer: Observer<ValidationErrors | null>) => {
       const value = control.value.toString();
@@ -226,15 +355,15 @@ new Observable((observer: Observer<ValidationErrors | null>) => {
       this.loadingBar.complete();
       this.isLoading = false;
       if (data.status === 'success') {
-            this.current += 1;
-            this.fullApplicationDetails = { ...this.fullApplicationDetails, ...this.workForm.value, ...this.loanBreakdown };
-          } else {
-            this.message.error(data.message);
-          }
-        }, err => {
-          this.loadingBar.complete();
-          this.isLoading = false;
-        });
+        this.current += 1;
+        this.fullApplicationDetails = { ...this.fullApplicationDetails, ...this.workForm.value, ...this.loanBreakdown };
+      } else {
+        this.message.error(data.message);
+      }
+    }, err => {
+      this.loadingBar.complete();
+      this.isLoading = false;
+    });
   }
 
   format(valString) {
