@@ -1,4 +1,5 @@
-
+<div>
+  
   <h1 class="text-pry font-bold text-center mb-2 mt-3">Loan Application Form</h1>
   <div class="inner-content">
     <nz-steps nzSize="small" [nzCurrent]="current" [nzDirection]="direction">
@@ -27,7 +28,7 @@
                           Please enter Loan amount!
                         </ng-container>
                         <ng-container *ngIf="control.hasError('minAmt')">
-                          Loan Amount must be greater than ₦30,000!
+                          Loan Amount must be greater than ₦20,000!
                         </ng-container>
                         <ng-container *ngIf="control.hasError('maxAmt')">
                           loan Amount can not be greater than ₦1,000,000!
@@ -112,10 +113,10 @@
             <form nz-form [formGroup]="personalForm" (ngSubmit)="collectPersonalInfo()">
               <h2 class="font-bold text-pry">Personal Information</h2>
               <div nz-row nzGutter="16">
-                <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="8" nzOffset="0">
+                <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="6" nzLg="6" nzXl="6" nzOffset="0">
                   <nz-form-item>
                     <nz-form-label class="float-left">Title</nz-form-label>
-                    <nz-form-control nzErrorTip="Please seelct your title!">
+                    <nz-form-control nzErrorTip="Please select your title!">
                       <nz-select nzAllowClear nzSize="large" formControlName="title" class="title-select"
                         nzPlaceHolder="Title">
                         <nz-option nzLabel="Mr" nzValue="mr"></nz-option>
@@ -127,30 +128,6 @@
                     </nz-form-control>
                   </nz-form-item>
                 </div>
-                <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="8" nzOffset="0">
-                  <nz-form-item>
-                    <nz-form-label class="float-left">DOB</nz-form-label>
-                    <nz-form-control nzErrorTip="Please select your D.O.B!">
-                      <nz-date-picker [nzDisabledDate]="disabledDate" nzShowToday="false" nzSize="large"
-                        formControlName="dob" (change)="onChange($event)">
-                      </nz-date-picker>
-                    </nz-form-control>
-                  </nz-form-item>
-                </div>
-                <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="8" nzOffset="0">
-                  <nz-form-item>
-                    <nz-form-label class="float-left">Gender</nz-form-label>
-                    <nz-form-control nzErrorTip="Please select your gender!">
-                      <nz-select nzAllowClear nzSize="large" class="title-select" nzPlaceHolder="Gender"
-                        formControlName="gender">
-                        <nz-option nzLabel="Male" nzValue="male"></nz-option>
-                        <nz-option nzLabel="Female" nzValue="female"></nz-option>
-                      </nz-select>
-                    </nz-form-control>
-                  </nz-form-item>
-                </div>
-              </div>
-              <div nz-row nzGutter="16">
                 <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="9" nzLg="9" nzXl="9" nzOffset="0">
                   <nz-form-item>
                     <nz-form-label class="float-left">First Name</nz-form-label>
@@ -169,12 +146,39 @@
                     </nz-form-control>
                   </nz-form-item>
                 </div>
+              </div>
+              <div nz-row nzGutter="16">
                 <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="6" nzLg="6" nzXl="6" nzOffset="0">
                   <nz-form-item>
-                    <nz-form-label class="float-left">Refferal Code</nz-form-label>
-                    <nz-form-control>
-                      <input nzSize="large" type="text" formControlName="referral" nz-input
-                        placeholder="Referral code" />
+                    <nz-form-label class="float-left">DOB</nz-form-label>
+                    <nz-form-control nzErrorTip="Please select your D.O.B!">
+                      <nz-date-picker [nzDisabledDate]="disabledDate" nzShowToday="false" nzSize="large"
+                        formControlName="dob" (change)="onChange($event)">
+                      </nz-date-picker>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="6" nzLg="6" nzXl="6" nzOffset="0">
+                  <nz-form-item>
+                    <nz-form-label class="float-left">Gender</nz-form-label>
+                    <nz-form-control nzErrorTip="Please select your gender!">
+                      <nz-select nzAllowClear nzSize="large" class="title-select" nzPlaceHolder="Gender"
+                        formControlName="gender">
+                        <nz-option nzLabel="Male" nzValue="male"></nz-option>
+                        <nz-option nzLabel="Female" nzValue="female"></nz-option>
+                      </nz-select>
+                    </nz-form-control>
+                  </nz-form-item>
+                </div>
+                <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" nzOffset="0">
+                  <nz-form-item>
+                    <nz-form-label class="float-left">How did you hear about Credit Wallet?</nz-form-label>
+                    <nz-form-control nzErrorTip="Please select an option!">
+                        <nz-select nzAllowClear nzShowSearch formControlName="referral" nzSize="large"
+                        nzAllowClear nzPlaceHolder="Select an option">
+                        <nz-option *ngFor="let marketer of marketers" [nzValue]="marketer.value" [nzLabel]="marketer.name">
+                        </nz-option>
+                      </nz-select>
                     </nz-form-control>
                   </nz-form-item>
                 </div>
@@ -342,92 +346,15 @@
                   </nz-card>
                 </ng-container>
                <ng-container *ngIf="automate">
-                <ng-container *ngIf="automateDetails; else processing">
-                  <nz-card class="success-card"> 
-                    <p class = "gray text-center">We are pleased to inform you that your loan request has been pre-approved under the following terms and
-                   conditions</p>
-               <br/>
-
-               <h1 style="font-size: 60px;color:#f56b2a; text-align: center;"><b>{{loanamount | currency:'₦ '}}</b>
-               <br/>
-               <span class = "gray" style="font-size:12px">Pre-approved Loan Amount </span>
-               </h1>
-                   <ng5-slider [(value)]="loanamount" (valueChange)="setLoanRepayment()" [options]="options"></ng5-slider>  
-                   <p style="text-align:center"><span class = "gray" style="font-size:12px">Drag the slider to change loan amount</span></p>
-                   <nz-table class="" nzTemplateMode nzBordered>
-                     <tbody>
-                       <tr>
-                         <td  class="p-2 text-left">Duration</td>
-                         <td  class="p-2" *ngIf = "verification == null">
-                           <div nz-row nzType="flex" nzJustify="end">
-                             <div nz-col nzXs="12" nzSm="12" nzMd="12" nzLg="12" nzXl="12" nzOffset="0">
-                               <nz-select nzAllowClear class="title-select" name="durationValue" [(ngModel)]="durationValue"  (ngModelChange) = "changeduration($event)" nzSize="large"
-                               nzPlaceHolder="Tenor">
-                               <nz-option nzValue="2" nzLabel="2 Months">
-                               </nz-option>
-                               <nz-option nzValue="3" nzLabel="3 Months">
-                               </nz-option>
-                               <nz-option nzValue="4" nzLabel="4 Months">
-                               </nz-option>
-                               <nz-option nzValue="5" nzLabel="5 Months">
-                               </nz-option>
-                               <nz-option nzValue="6" nzLabel="6 Months">
-                               </nz-option>
-                              </nz-select>
-                             </div>
-                           </div>
-                          </td>
-                         <td  class="p-2" *ngIf = "verification != null">
-                           <div nz-row nzType="flex" nzJustify="end">
-                             <div nz-col nzXs="12" nzSm="12" nzMd="12" nzLg="12" nzXl="12" nzOffset="0">
-                               <!-- <select class = "form-control form-control-lg" name="duration" [(ngModel)]="duration"  (change) = "changeduration($event.target.value)">
-                                 <option value="null" selected>Duration</option>
-                               <option [value]="tenor.value" *ngFor="let tenor of duration">{{tenor.label}}</option>
-                               </select> -->
-                               <nz-select nzAllowClear class="title-select" name="durationValue" [(ngModel)]="durationValue"  (ngModelChange) = "changeduration($event)" nzSize="large"
-                              nzPlaceHolder="Tenor">
-                               <nz-option *ngFor="let tenor of duration" [nzValue]="tenor.value" [nzLabel]="tenor.label">
-                               </nz-option>
-                             </nz-select>
-                             </div>
-                           </div>
-                          </td>
-                       </tr>
-                       <tr>
-                         <td  class="p-2 text-left">Monthly Repayment</td>
-                         <td  class="p-2 text-right">{{monthlyrepayment  | currency:'₦ '}}</td>
-                       </tr>
-                       <tr>
-                         <td  class="p-2 text-left">Interest Rate</td>
-                         <td  class="p-2 text-right">7.5% per month (i.e. 0.25% per day prorated)</td>
-                       </tr>
-                       <tr>
-                         <td  class="p-2 text-left">Repayment Plan</td>
-                         <td  class="p-2 text-right">Monthly</td>
-                       </tr>
-                       <tr>
-                         <td  class="p-2 text-left">Number of Repayments</td>
-                         <td  class="p-2 text-right">{{durationValue}}</td>
-                       </tr>
-                       <tr>
-                           <td  class="p-2 text-left">Insurance</td>
-                           <td  class="p-2 text-right">{{insurance  | currency:'₦ '}}</td>
-                         </tr>
-                         <tr>
-                             <td  class="p-2 text-left">Disbursement Fee</td>
-                             <td  class="p-2 text-right">{{disbursementfees  | currency:'₦ '}}</td>
-                           </tr>
-                      
-                     </tbody>
-                   </nz-table>
-                   <p class ="addFont" style ="font-size:17px" ><em>By Clicking Continue, I, {{loans?.loan.firstname | titlecase}} {{loans?.loan.lastname | titlecase}} accept the Credit Offer with a full understanding of the Loans <a href ="https://creditwallet.ng/loanterm.pdf">Terms and
-                     Conditions</a></em></p> 
-                   </nz-card>
-                </ng-container>
-                <ng-template #processing>
+                <ng-container *ngIf="processing; else errorMsg">
                   <div class="text-center">
                     <i nz-icon nzType="loading" nzTheme="outline"></i>
                     <p>Processing</p>
+                  </div>
+                </ng-container>
+                <ng-template #errorMsg>
+                  <div class="text-center">
+                    <p>An error occured. Please try again</p>
                   </div>
                 </ng-template>
                </ng-container>
@@ -591,3 +518,5 @@
       </button>
     </div>
   </div>
+
+</div>

@@ -48,6 +48,10 @@ export class LoanApplyService {
   }
 
   confirmLoanOffer(loan) {
+    return this.http.post(`${environment.loanUrl}loan/finalize/new`, loan);
+  }
+
+  confirmLoanAutoOffer(loan) {
     return this.http.post(`${environment.loanUrl}loan/transaction/complete`, loan);
   }
 }

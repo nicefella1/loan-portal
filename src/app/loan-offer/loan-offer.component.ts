@@ -84,7 +84,7 @@ viewLoanOffer() {
       this.loanOfferDetails = data.loan;
       this.authorizationForm.patchValue({email: this.loanOfferDetails.email});
     } else {
-      this.message.error('Loan Expired');
+      // this.message.error('Loan Expired');
     }
   }, err => {
     this.loadingBar.complete();
@@ -135,7 +135,6 @@ viewLoanOffer() {
       this.loadingBar.complete();
       if (data.status === 'success') {
         this.applicationSuccess = true;
-        this.message.success(data.message);
       } else {
         this.message.error(data.message);
       }

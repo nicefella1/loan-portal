@@ -12,7 +12,7 @@ import { Observable, Observer } from 'rxjs';
 import { HttpRequest, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Options, LabelType } from 'ng5-slider';
+import { Options, LabelType, ChangeContext } from 'ng5-slider';
 
 @Component({
   selector: 'app-offer',
@@ -45,7 +45,7 @@ export class OfferComponent implements OnInit {
   GROUP_SEPARATOR = ',';
   applicationSuccess: boolean;
   loanOfferLoaded: boolean;
-  loanamount: number = 0;
+  loanamount = 0;
   durationValue: any = null;
   options: Options = {
     floor: 20000,
@@ -61,6 +61,19 @@ export class OfferComponent implements OnInit {
     },
     translate: (value: number, label: LabelType): string => {
       return '₦' + value;
+    }
+  };
+  durationOptions: Options = {
+    floor: 2,
+    ceil: this.durationValue,
+    step: 1,
+    showSelectionBar: true,
+    selectionBarGradient: {
+      from: '#f56b2a',
+      to: '#f56b2a'
+    },
+    getPointerColor: (value: number): string => {
+      return '#f56b2a';
     }
   };
   actualtenor: number;
@@ -93,51 +106,57 @@ export class OfferComponent implements OnInit {
       this.route.params.subscribe((param: Params) => {
         this.loanOfferId = param.id;
       });
-      this.viewLoanOffer();
+      this.viewLoanOffer(this.loanOfferId);
 
       this.bankAcountForm = this.fb.group({
         bankname: [null, [Validators.required]],
         accountnumber: [null, [this.confirmAcctNumLengthValidator]],
       });
-  
       this.authorizationForm = this.fb.group({
         email: [{value: null, disabled: true}],
         code: [null, [Validators.required]]
       });
-      
     }
-  
-  viewLoanOffer() {
-    this.loadingBar.start();
-    this.service.loanOfferCache.subscribe((data: any) => {
-      this.loanOfferLoaded = true;
-      this.loadingBar.complete();
-      if (data) {
-        console.log(data);
-        this.loans = data;
-        this.salaryhistory = data.salaryhistory;
-        this.loanhistory = data.loanhistory;
-        this.verification = data.verification;
-        window.localStorage.setItem('emailaddress', this.loans.loan.email);
-        window.localStorage.setItem('firstname', this.loans.loan.firstname);
-        window.localStorage.setItem('lastname', this.loans.loan.lastname);
-        this.loanamount = data.loanamount;
-        this.durationValue = data.duration;
-        this.loanresult = data.loanresult;
-        this.actualtenor = this.loanresult.actualtenor;
-        const newOptions = Object.assign({}, this.options);
-        newOptions.ceil = data.loanamount;
-        this.options = newOptions;
-        this.setLoanRepayment();
-      } else {
-        this.message.error('No loan offer found');
-      }
-    }, err => {
-      this.loadingBar.complete();
-      this.message.error('Error connecting to server. Please try again');
-    });
-  }
-  
+
+    viewLoanOffer(loanid) {
+      this.loadingBar.start();
+      this.service.automateOffer(loanid).subscribe((data: any) => {
+        this.loanOfferLoaded = true;
+        this.loadingBar.complete();
+        if (data.status === 'success' && data.returnstatus === true) {
+          this.loans = data;
+          this.salaryhistory = data.salaryhistory;
+          this.loanhistory = data.loanhistory;
+          this.verification = data.verification;
+          window.localStorage.setItem('emailaddress', this.loans.loan.email);
+          window.localStorage.setItem('firstname', this.loans.loan.firstname);
+          window.localStorage.setItem('lastname', this.loans.loan.lastname);
+          this.loanamount = data.loanamount;
+          this.durationValue = data.duration;
+          this.actualtenor = data.actualtenor;
+          const newOptions = Object.assign({}, this.options);
+          const newDurationOptions = Object.assign({}, this.durationOptions);
+          if (this.verification) {
+            newDurationOptions.ceil = data.duration;
+          } else {
+            newDurationOptions.ceil = 6;
+          }
+          newOptions.ceil = data.loanamount;
+          this.durationOptions = newDurationOptions;
+          this.options = newOptions;
+          this.setLoanRepayment();
+        } else if (data.status === 'success' && data.returnstatus === false) {
+
+        } else {
+          this.message.error(data.message);
+        }
+      }, error => {
+        this.isLoading = false;
+        this.loadingBar.complete();
+        this.message.error('Error connecting. Please try again');
+      });
+    }
+
     pre(): void {
       this.current -= 1;
     }
@@ -149,8 +168,6 @@ export class OfferComponent implements OnInit {
           loanAmount: this.loanamount,
           duration: this.durationValue,
         };
-        sessionStorage.setItem('loanData', JSON.stringify(data));
-        console.log(sessionStorage.getItem('loanData'));
         this.current += 1;
       } else if (this.current === 1) {
         this.submitForm();
@@ -178,11 +195,9 @@ export class OfferComponent implements OnInit {
         idcard: this.idCardUploadMessage ? this.idCardUploadMessage : '',
         passport: this.passportUploadMessage ? this.passportUploadMessage : ''
       };
-      console.log(loan);
       this.isLoading = true;
       this.loadingBar.start();
-      this.service.confirmLoanOffer(loan).subscribe((data: any) => {
-        console.log(data);
+      this.service.confirmLoanAutoOffer(loan).subscribe((data: any) => {
         this.isLoading = false;
         this.loadingBar.complete();
         if (data.status === 'success') {
@@ -192,7 +207,6 @@ export class OfferComponent implements OnInit {
           this.message.error(data.message);
         }
       }, error => {
-        console.log(error)
         this.isLoading = false;
         this.loadingBar.complete();
         this.message.error('Error connecting. Please try again');
@@ -206,11 +220,11 @@ export class OfferComponent implements OnInit {
       this.interest = interestperday * this.loanamount;
       this.monthlyrepayment = (this.interest + this.loanamount + this.insurance + this.disbursementfees) / this.durationValue;
     }
-    changeduration(value) {
-      console.log(value);
-      if (value) {
+    changeduration(event: ChangeContext) {
+      console.log(event.value);
+      if (event.value) {
       if (confirm('Are you sure you want to change the duration')) {
-         this.durationValue = value;
+         this.durationValue = event.value;
          this.setDuration(this.durationValue);
        }
      }
@@ -225,7 +239,6 @@ export class OfferComponent implements OnInit {
       this.service.calculaterepayment(json)
         .subscribe((data: any) => {
           this.loadingBar.stop();
-          console.log(data);
           if (data.status === 'success') {
             this.actualtenor = data.actualtenor;
             this.monthlyrepayment = data.monthlyrepayment;
@@ -235,7 +248,6 @@ export class OfferComponent implements OnInit {
         },
           (error) => {
             this.loadingBar.stop();
-            console.log(error);
             this.message.error('Network error. Please try again');
           }
         );
@@ -246,7 +258,6 @@ export class OfferComponent implements OnInit {
       this.isLoading = true;
       this.loadingBar.start();
       this.service.verifyAccountBVNDetails(this.loanOfferId, bankname, accountnumber).subscribe((data: any) => {
-        console.log(data);
         this.isLoading = false;
         this.loadingBar.complete();
         if (data.status === 'success') {
@@ -260,7 +271,7 @@ export class OfferComponent implements OnInit {
         this.message.error('Error connecting to server. Please try again later');
       });
     }
-  
+
     process() {
       const accountData = {
         id: this.loanOfferId,
@@ -311,7 +322,6 @@ export class OfferComponent implements OnInit {
             // tslint:disable-next-line: no-non-null-assertion
             item.onSuccess!(event.body, item.file!, event);
             if (event.body.status === 'success') {
-              console.log(event.url, event.body);
               if (this.current === 2) {
               this.idCardUploadName = item.file.name;
               this.idCardUploadMessage = event.body.message;
@@ -361,7 +371,7 @@ export class OfferComponent implements OnInit {
     //     this.message.error('Error connecting to server. Please try again');
     //   });
     // }
-  
+
     invalidAcctAsyncValidator = (control: FormControl) =>
       new Observable((observer: Observer<ValidationErrors | null>) => {
         const value = control.value.toString();
@@ -381,12 +391,11 @@ export class OfferComponent implements OnInit {
           });
         }
       })
-  
-  
+
     collectEmploymentlInfo() {
       this.fullApplicationDetails = { ...this.fullApplicationDetails, ...this.bankAcountForm.value, ...this.loanBreakdown };
     }
-  
+
     format(valString) {
       if (!valString) {
         return '';
@@ -395,22 +404,21 @@ export class OfferComponent implements OnInit {
       const parts = this.unFormat(val).split(this.DECIMAL_SEPARATOR);
       return parts[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, this.GROUP_SEPARATOR) + (!parts[1] ? '' : this.DECIMAL_SEPARATOR + parts[1]);
     }
-  
-  
+
     unFormat(val) {
       if (!val) {
         return '';
       }
       val = val.replace(/^0+/, '');
-  
+
       if (this.GROUP_SEPARATOR === ',') {
         return val.replace(/,/g, '');
       } else {
         return val.replace(/\./g, '');
       }
     }
-  
-    submitForm(): void {
+
+   submitForm(): void {
       // tslint:disable-next-line
       for (const i in this.bankAcountForm.controls) {
         this.bankAcountForm.controls[i].markAsDirty();
@@ -424,14 +432,7 @@ export class OfferComponent implements OnInit {
         this.authorizationForm.controls[i].updateValueAndValidity();
       }
     }
-    // submitWorkForm(): void {
-    //   // tslint:disable-next-line
-    //   for (const i in this.bankAcountForm.controls) {
-    //     this.bankAcountForm.controls[i].markAsDirty();
-    //     this.bankAcountForm.controls[i].updateValueAndValidity();
-    //   }
-    // }
-  
+
     confirmValidator = (control: FormControl): { [s: string]: boolean } => {
       const val = this.unFormat(control.value);
       if (!control.value) {
@@ -445,7 +446,7 @@ export class OfferComponent implements OnInit {
       }
       return {};
     }
-  
+
     confirmAcctNumLengthValidator = (control: FormControl): { [s: string]: boolean } => {
       if (!control.value) {
         return { error: true, required: true };
@@ -460,7 +461,7 @@ export class OfferComponent implements OnInit {
       }
       return {};
     }
-  
+
     changeNum(e) {
       const val = e.target.value;
       const inputvalue = this.format(e.target.value);
