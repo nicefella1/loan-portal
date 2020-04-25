@@ -221,7 +221,6 @@ export class OfferComponent implements OnInit {
       this.monthlyrepayment = (this.interest + this.loanamount + this.insurance + this.disbursementfees) / this.durationValue;
     }
     changeduration(event: ChangeContext) {
-      console.log(event.value);
       if (event.value) {
       if (confirm('Are you sure you want to change the duration')) {
          this.durationValue = event.value;

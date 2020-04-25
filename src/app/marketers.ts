@@ -1,26 +1,26 @@
 export const marketers = [
     {
-        name: 'Adedoyin Ojo',
+        name: 'Adedoyin (09039355548)',
         value: 'adedoyinojo'
     },
     {
-        name: 'Adefarasin Aderonke',
+        name: 'Aderonke (07065282676)',
         value: 'adefarasinaderonke'
     },
     {
-        name: 'Aganmwonyi Osas',
+        name: 'Osas (09037075817)',
         value: 'osas'
     },
     {
-        name: 'Akinbode Kofoworola',
+        name: 'Kofoworola (08169032734)',
         value: 'akinbode'
     },
     {
-        name: 'Beke Sarah',
+        name: 'Sarah (07065282448)',
         value: 'bekesarah'
     },
     {
-        name: 'Blessing Ebute',
+        name: 'Blessing (07034941112)',
         value: 'blessing'
     },
     {
@@ -28,31 +28,31 @@ export const marketers = [
         value: 'Credit Wallet'
     },
     {
-        name: 'Eke Emmanuella',
+        name: 'Emmanuella (09033352328)',
         value: 'Eke'
     },
     {
-        name: 'Folukemi Agbaje',
+        name: 'Folukemi (07065282319)',
         value: 'folukemiagbaje'
     },
     {
-        name: 'Maureen Onyedieke',
+        name: 'Maureen (08066441071)',
         value: 'Onyedieke'
     },
     {
-        name: 'Nnamso violet',
+        name: 'Violet (08144349992)',
         value: 'Nnamso'
     },
     {
-        name: 'Okitika Mercy',
+        name: 'Mercy (09039355034)',
         value: 'okitika'
     },
     {
-        name: 'Tugbobo Ayotunde',
+        name: 'Ayotunde (07065282275)',
         value: 'tugboboayotunde'
     },
     {
-        name: 'Ugbobuaku Mmesoma',
+        name: 'Mmesoma (09030261621)',
         value: 'Ugbobuaku'
     },
 ];
