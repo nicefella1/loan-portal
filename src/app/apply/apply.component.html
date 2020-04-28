@@ -14,7 +14,7 @@
     <div class="steps-content">
       <ng-container *ngIf="current === 0">
         <div nz-row nzType="flex" nzJustify="center">
-          <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="14" nzXl="14" nzOffset="0">
+          <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="24" nzXl="24" nzOffset="0">
             <form nz-form [formGroup]="startForm" (ngSubmit)="calculateRepaymentForm()">
               <h2 class="font-bold text-pry">Kindly provide the amount you want and your preferred duration</h2>
               <div nz-row nzGutter="16">
@@ -108,12 +108,12 @@
       </ng-container>
       <ng-container *ngIf="current === 2">
         <div nz-row nzType="flex" nzJustify="center">
-          <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="14" nzXl="14" nzOffset="0">
+          <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="24" nzXl="24" nzOffset="0">
 
             <form nz-form [formGroup]="personalForm" (ngSubmit)="collectPersonalInfo()">
               <h2 class="font-bold text-pry">Personal Information</h2>
               <div nz-row nzGutter="16">
-                <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="6" nzLg="6" nzXl="6" nzOffset="0">
+                <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="8" nzOffset="0">
                   <nz-form-item>
                     <nz-form-label class="float-left">Title</nz-form-label>
                     <nz-form-control nzErrorTip="Please select your title!">
@@ -128,7 +128,7 @@
                     </nz-form-control>
                   </nz-form-item>
                 </div>
-                <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="9" nzLg="9" nzXl="9" nzOffset="0">
+                <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="8" nzOffset="0">
                   <nz-form-item>
                     <nz-form-label class="float-left">First Name</nz-form-label>
                     <nz-form-control nzHasFeedback nzErrorTip="Please input your First Name!">
@@ -137,7 +137,7 @@
                     </nz-form-control>
                   </nz-form-item>
                 </div>
-                <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="9" nzLg="9" nzXl="9" nzOffset="0">
+                <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="8" nzOffset="0">
                   <nz-form-item>
                     <nz-form-label class="float-left">Last Name</nz-form-label>
                     <nz-form-control nzHasFeedback nzErrorTip="Please input your Last Name!">
@@ -172,13 +172,17 @@
                 </div>
                 <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" nzOffset="0">
                   <nz-form-item>
-                    <nz-form-label class="float-left">How did you hear about Credit Wallet?</nz-form-label>
-                    <nz-form-control nzErrorTip="Please select an option!">
+                    <nz-form-label class="float-left">Enter Referral Code (Applications with referral codes are processed faster)</nz-form-label>
+                    <!-- <nz-form-control nzErrorTip="Please select an option!">
                         <nz-select nzAllowClear nzShowSearch formControlName="referral" nzSize="large"
                         nzAllowClear nzPlaceHolder="Select an option">
                         <nz-option *ngFor="let marketer of marketers" [nzValue]="marketer.value" [nzLabel]="marketer.name">
                         </nz-option>
                       </nz-select>
+                    </nz-form-control> -->
+                    <nz-form-control>
+                      <input nzSize="large" type="text" formControlName="referral" nz-input
+                        placeholder="Referral Code" />
                     </nz-form-control>
                   </nz-form-item>
                 </div>
@@ -189,7 +193,7 @@
       </ng-container>
       <ng-container *ngIf="current === 3">
         <div nz-row nzType="flex" nzJustify="center">
-          <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="14" nzXl="14" nzOffset="0">
+          <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="24" nzXl="24" nzOffset="0">
 
             <form nz-form [formGroup]="contactForm" (ngSubmit)="collectContactlInfo()">
               <h2 class="font-bold text-pry">Contact Information</h2>
@@ -267,7 +271,7 @@
       </ng-container>
       <ng-container *ngIf="current === 4">
         <div nz-row nzType="flex" nzJustify="center">
-          <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="14" nzXl="14" nzOffset="0">
+          <div nz-col nzXs="24" nzSm="24" nzMd="20" nzLg="24" nzXl="24" nzOffset="0">
             <form nz-form [formGroup]="workForm" (ngSubmit)="collectEmploymentlInfo()">
               <h2 class="font-bold text-pry">Employment Information</h2>
               <div nz-row nzGutter="16">

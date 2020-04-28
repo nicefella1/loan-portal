@@ -68,7 +68,7 @@ export class ApplyComponent implements OnInit {
       dob: [null, [Validators.required]],
       gender: [null, [Validators.required]],
       title: [null, [Validators.required]],
-      referral: [null, Validators.required]
+      referral: [null]
     });
 
     this.contactForm = this.fb.group({
