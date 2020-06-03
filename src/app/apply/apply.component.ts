@@ -20,6 +20,7 @@ import { marketers } from '../marketers';
 export class ApplyComponent implements OnInit {
   current = 0;
   minDate = new Date('2001-12-31');
+  maxDate = new Date('1955-01-01');
   duration = tenors;
   banks = banks;
   marketers = marketers;
@@ -87,7 +88,7 @@ export class ApplyComponent implements OnInit {
     });
   }
   disabledDate = (current: Date): boolean => {
-    return differenceInCalendarDays(current, this.minDate) > 0;
+    return differenceInCalendarDays(current, this.minDate) > 0 || differenceInCalendarDays(current, this.maxDate) < 0;
   }
   editInfo(page: number) {
     this.current = page;

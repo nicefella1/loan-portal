@@ -221,12 +221,8 @@ export class OfferComponent implements OnInit {
       this.monthlyrepayment = (this.interest + this.loanamount + this.insurance + this.disbursementfees) / this.durationValue;
     }
     changeduration(event: ChangeContext) {
-      if (event.value) {
-      if (confirm('Are you sure you want to change the duration')) {
-         this.durationValue = event.value;
-         this.setDuration(this.durationValue);
-       }
-     }
+      this.durationValue = event.value;
+      this.setDuration(this.durationValue);
     }
 
     setDuration(duration) {
@@ -235,9 +231,11 @@ export class OfferComponent implements OnInit {
         amount: this.loanamount
       };
       this.loadingBar.start();
+      this.isLoading = true;
       this.service.calculaterepayment(json)
         .subscribe((data: any) => {
           this.loadingBar.stop();
+          this.isLoading = false;
           if (data.status === 'success') {
             this.actualtenor = data.actualtenor;
             this.monthlyrepayment = data.monthlyrepayment;
@@ -247,6 +245,7 @@ export class OfferComponent implements OnInit {
         },
           (error) => {
             this.loadingBar.stop();
+            this.isLoading = false;
             this.message.error('Network error. Please try again');
           }
         );
