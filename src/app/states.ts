@@ -110,4 +110,4 @@ export const states = [
     {
         name: 'Zamfara'
     }
-]
+];

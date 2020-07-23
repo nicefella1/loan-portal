@@ -43,52 +43,52 @@ export const tenors = [
         label: '12 Months',
         value: 12
     },
-    {
-        label: '13 Months',
-        value: 13
-    },
-    {
-        label: '14 Months',
-        value: 14
-    },
-    {
-        label: '15 Months',
-        value: 15
-    },
-    {
-        label: '16 Months',
-        value: 16
-    },
-    {
-        label: '17 Months',
-        value: 17
-    },
-    {
-        label: '18 Months',
-        value: 18
-    },
-    {
-        label: '19 Months',
-        value: 19
-    },
-    {
-        label: '20 Months',
-        value: 20
-    },
-    {
-        label: '21 Months',
-        value: 21
-    },
-    {
-        label: '22 Months',
-        value: 22
-    },
-    {
-        label: '23 Months',
-        value: 23
-    },
-    {
-        label: '24 Months',
-        value: 24
-    },
+    // {
+    //     label: '13 Months',
+    //     value: 13
+    // },
+    // {
+    //     label: '14 Months',
+    //     value: 14
+    // },
+    // {
+    //     label: '15 Months',
+    //     value: 15
+    // },
+    // {
+    //     label: '16 Months',
+    //     value: 16
+    // },
+    // {
+    //     label: '17 Months',
+    //     value: 17
+    // },
+    // {
+    //     label: '18 Months',
+    //     value: 18
+    // },
+    // {
+    //     label: '19 Months',
+    //     value: 19
+    // },
+    // {
+    //     label: '20 Months',
+    //     value: 20
+    // },
+    // {
+    //     label: '21 Months',
+    //     value: 21
+    // },
+    // {
+    //     label: '22 Months',
+    //     value: 22
+    // },
+    // {
+    //     label: '23 Months',
+    //     value: 23
+    // },
+    // {
+    //     label: '24 Months',
+    //     value: 24
+    // },
 ];

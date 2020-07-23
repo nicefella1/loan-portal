@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { routing } from './app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgZorroAntdModule, NZ_I18N, en_US } from 'ng-zorro-antd';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +22,7 @@ registerLocaleData(en);
   imports: [
     LoadingBarModule,
     BrowserModule,
-    routing,
+    AppRoutingModule,
     NgZorroAntdModule,
     FormsModule,
     HttpClientModule,
