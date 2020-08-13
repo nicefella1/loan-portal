@@ -45,7 +45,7 @@
                     <nz-form-control nzErrorTip="Please select duration!">
                       <nz-select nzAllowClear class="title-selct" formControlName="tenor" nzSize="large"
                         nzAllowClear nzPlaceHolder="Tenor">
-                        <nz-option *ngFor="let tenor of duration" [nzValue]="tenor.value" [nzLabel]="tenor.label">
+                        <nz-option *ngFor="let tenor of duration" [nzDisabled]="tenor.value > 12" [nzValue]="tenor.value" [nzLabel]="tenor.label">
                         </nz-option>
                       </nz-select>
                     </nz-form-control>
