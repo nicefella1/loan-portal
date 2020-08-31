@@ -2,12 +2,12 @@
 
 
 .steps-content {
-  margin-top: 16px;
-  border: 1px dashed #e9e9e9;
-  border-radius: 6px;
-  background-color: #fafafa;
-  min-height: 200px;
-  text-align: center;
+  // margin-top: 16px;
+  // border: 1px dashed #e9e9e9;
+  // border-radius: 6px;
+  // background-color: #fafafa;
+  // min-height: 200px;
+  // text-align: center;
 
   .loan-amount{
     font-size: 40px; 
@@ -87,13 +87,13 @@ nz-week-picker {
 // }
 
 @media screen and (max-width: 767px) {
-  .steps-content {
-    padding: .1rem;
-  }
+  // .steps-content {
+  //   padding: .1rem;
+  // }
 }
 
 @media screen and (min-width: 768px) {
-  .steps-content {
-    padding: 3rem;
-  }
+  // .steps-content {
+  //   padding: 3rem;
+  // }
 }

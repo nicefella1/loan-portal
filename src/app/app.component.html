@@ -1,20 +1,24 @@
 <ngx-loading-bar color ="#0A2E65"></ngx-loading-bar>
-<nz-layout>
-    <nz-header class="d-flex">
-      <a class="logo" href="/"  >
-        <img src="../../assets/cwlogo.png" alt="" class="mr-1">
-        <strong class="cw_title">CreditWallet</strong>
-      </a>
-      <div class="ml-auto d-flex flex-md-column justify-content-center align-items-md-end align-items-center">
-        <p class="no-margin mr-1 line-height-1 text-right">
-          Existing Customer?
-        </p>
-        <a href="https://accounts.creditwallet.ng" nz-button nzSize="small" class="ml-1" nzType="primary">
-          Click Here
+<div class="wrapper">
+  <div class="container">
+    <nz-layout>
+      <nz-header class="d-flex">
+        <a class="logo" href="/"  >
+          <img src="../../assets/cwlogo.png" width="30" height="30" alt="" class="mr-1">
+          <strong class="cw_title">CreditWallet</strong>
         </a>
-      </div>
-    </nz-header>
-    <nz-content class="mt5 mb-3 container">
-        <router-outlet></router-outlet>
-    </nz-content>
-  </nz-layout>
+        <div class="ml-auto d-flex flex-md-column justify-content-center align-items-md-end align-items-center">
+          <p class="no-margin mr-1 line-height-1 text-right">
+            Existing Customer?
+          </p>
+          <a href="https://accounts.creditwallet.ng" nz-button nzSize="small" class="ml-1" nzType="primary">
+            Click Here
+          </a>
+        </div>
+      </nz-header>
+      <nz-content class="">
+          <router-outlet></router-outlet>
+      </nz-content>
+    </nz-layout>
+  </div>
+</div>
