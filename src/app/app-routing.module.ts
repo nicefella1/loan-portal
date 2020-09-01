@@ -32,4 +32,4 @@ const routes: Routes = [
 })
 
 export class AppRoutingModule { }
-// export const routing = RouterModule.forRoot(routes, {useHash: true}); 
+// export const routing = RouterModule.forRoot(routes, {useHash: true});
