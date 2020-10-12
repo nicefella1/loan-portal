@@ -28,32 +28,39 @@
                   <nz-step nzTitle="Work" nzDescription="Info" nzIcon="laptop"></nz-step>
                   <nz-step nzTitle="Final Step" nzIcon="info-circle"></nz-step>
                 </nz-steps> -->
-                <ul class="step-indicators-wrapper">
-                  <li class="step-indicators"
-                    [ngClass]="{'completed-step': current  >0, 'current-step': current  === 0}">
+                <div class="step-indicators-wrapper">
+                  <div class="step-indicators"
+                    [ngClass]="{'completed-step': current  > 0, 'current-step': current  === 0}">
                     1
-                  </li>
-                  <li class="step-indicators"
-                    [ngClass]="{'completed-step': current  >1, 'current-step': current  === 1}">
+                  </div>
+                  <div class="stepper-spacer" [ngClass]="{'stepper-spacer-completed': current  > 0}">
+                  </div>
+                  <div class="step-indicators"
+                    [ngClass]="{'completed-step': current  > 1, 'current-step': current  === 1}">
                     2
-                  </li>
-                  <li class="step-indicators"
-                    [ngClass]="{'completed-step': current  >2, 'current-step': current  === 2}">
+                  </div>
+                  <div class="stepper-spacer" [ngClass]="{'stepper-spacer-completed': current  > 1}">
+                  </div>
+                  <div class="step-indicators"
+                    [ngClass]="{'completed-step': current  > 2, 'current-step': current  === 2}">
                     3
-                  </li>
-                  <li class="step-indicators"
+                  </div>
+                  <div class="stepper-spacer" [ngClass]="{'stepper-spacer-completed': current  > 2}">
+                  </div>
+                  <div class="step-indicators"
                     [ngClass]="{'completed-step': current  >3, 'current-step': current  === 3}">
                     4
-                  </li>
-                  <li class="step-indicators"
-                    [ngClass]="{'completed-step': current  >4, 'current-step': current  ===4}">
+                  </div>
+                  <div class="stepper-spacer" [ngClass]="{'stepper-spacer-completed': current  > 3}">
+                  </div>
+                  <div class="step-indicators"
+                    [ngClass]="{'completed-step': current  > 4, 'current-step': current  === 4}">
                     5
-                  </li>
-                </ul>
-
+                  </div>
+                </div>
                 <div class="steps-content">
                   <ng-container *ngIf="current === 0">
-                    <div nz-row nzType="flex" nzJustify="center">
+                    <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                       <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                         <form nz-form [formGroup]="startForm" (ngSubmit)="calculateRepaymentForm()">
                           <h2 class="font-bold text-pry">Kindly provide the amount you want and your preferred duration
@@ -99,7 +106,7 @@
                     </div>
                   </ng-container>
                   <ng-container *ngIf="current === 1">
-                    <div nz-row nzType="flex" nzJustify="center">
+                    <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                       <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                         <h2 class="font-bold text-pry">Loan Breakdown</h2>
                         <ng-container *ngIf="loanBreakdown">
@@ -152,9 +159,8 @@
                     </div>
                   </ng-container>
                   <ng-container *ngIf="current === 2">
-                    <div nz-row nzType="flex" nzJustify="center">
+                    <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                       <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
-
                         <form nz-form [formGroup]="personalForm" (ngSubmit)="collectPersonalInfo()">
                           <h2 class="font-bold text-pry">Personal Information</h2>
                           <div nz-row nzGutter="16">
@@ -239,9 +245,8 @@
                     </div>
                   </ng-container>
                   <ng-container *ngIf="current === 3">
-                    <div nz-row nzType="flex" nzJustify="center">
+                    <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                       <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
-
                         <form nz-form [formGroup]="contactForm" (ngSubmit)="collectContactlInfo()">
                           <h2 class="font-bold text-pry">Contact Information</h2>
                           <div nz-row nzGutter="16">
@@ -324,7 +329,7 @@
                     </div>
                   </ng-container>
                   <ng-container *ngIf="current === 4">
-                    <div nz-row nzType="flex" nzJustify="center">
+                    <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                       <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                         <form nz-form [formGroup]="workForm" (ngSubmit)="collectEmploymentlInfo()">
                           <h2 class="font-bold text-pry">Employment Information</h2>
@@ -356,7 +361,8 @@
                               <nz-form-item>
                                 <!-- <nz-form-label class="float-left">Salary Bank Name</nz-form-label> -->
                                 <nz-form-control nzErrorTip="Please select your Bank!">
-                                  <nz-select nzAllowClear nzSize="large" formControlName="salary_bank_name"
+                                  <nz-select nzAllowClear nzShowSearch [nzFilterOption]="nzFilterOption"
+                                    (nzOnSearch)="search($event)" nzSize="large" formControlName="salary_bank_name"
                                     class="title-select" nzPlaceHolder="Salary Bank Name">
                                     <nz-option *ngFor="let bank of banks" [nzLabel]="bank.name"
                                       [nzValue]="bank.bankcode">
@@ -396,7 +402,7 @@
                     </div>
                   </ng-container>
                   <ng-container *ngIf="current === 5">
-                    <div nz-row nzType="flex" nzJustify="center">
+                    <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                       <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                         <nz-card>
                           <ng-container class="animated fadeIn" *ngIf="applicationSuccess; else loanDetails">
@@ -569,7 +575,6 @@
                         </nz-card>
                       </div>
                     </div>
-
                   </ng-container>
                 </div>
               </div>
@@ -595,5 +600,4 @@
       </div>
     </div>
   </div>
-
 </div>

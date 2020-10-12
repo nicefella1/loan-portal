@@ -24,7 +24,7 @@ export class OfferComponent implements OnInit {
   uploadUrl = `${environment.loanUrl}passport/upload`;
   minDate = new Date('2001-12-31');
   duration = tenors;
-  banks = banks;
+  banks = banks.sort((a , b) => a.name.localeCompare(b.name));
   direction;
   states = states;
   isLoading: boolean;
@@ -87,6 +87,7 @@ export class OfferComponent implements OnInit {
   loanhistory: any;
   loanresult: any;
   automateDetails: boolean;
+  nzFilterOption = () => true;
   constructor(private fb: FormBuilder, private service: LoanApplyService,
               private message: NzMessageService, private loadingBar: LoadingBarService, private route: ActivatedRoute) {
       this.getScreenSize();
@@ -118,6 +119,10 @@ export class OfferComponent implements OnInit {
       });
     }
 
+    search(value) {
+      const newBanks = banks.filter(bank => bank.name.toLowerCase().includes(value));
+      this.banks = newBanks;
+    }
     viewLoanOffer(loanid) {
       this.loadingBar.start();
       this.service.automateOffer(loanid).subscribe((data: any) => {

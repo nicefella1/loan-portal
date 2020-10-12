@@ -22,7 +22,7 @@ export class ApplyComponent implements OnInit {
   minDate = new Date('2001-12-31');
   maxDate = new Date('1955-01-01');
   duration = tenors;
-  banks = banks;
+  banks = banks.sort((a , b) => a.name.localeCompare(b.name));
   marketers = marketers;
   direction;
   states = states;
@@ -57,6 +57,12 @@ export class ApplyComponent implements OnInit {
       this.direction = 'horizontal';
     }
   }
+
+  search(value) {
+    const newBanks = banks.filter(bank => bank.name.toLowerCase().includes(value));
+    this.banks = newBanks;
+  }
+
   ngOnInit(): void {
     this.startForm = this.fb.group({
       amount: [this.amount, [this.confirmValidator]],

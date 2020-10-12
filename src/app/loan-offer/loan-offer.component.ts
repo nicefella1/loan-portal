@@ -23,7 +23,7 @@ export class LoanOfferComponent implements OnInit {
   uploadUrl = `${environment.loanUrl}passport/upload`;
   minDate = new Date('2001-12-31');
   duration = tenors;
-  banks = banks;
+  banks = banks.sort((a , b) => a.name.localeCompare(b.name));
   direction;
   states = states;
   isLoading: boolean;
@@ -44,6 +44,7 @@ export class LoanOfferComponent implements OnInit {
   GROUP_SEPARATOR = ',';
   applicationSuccess: boolean;
   loanOfferLoaded: boolean;
+  nzFilterOption = () => true;
   constructor(private fb: FormBuilder, private service: LoanApplyService,
               private message: NzMessageService, private loadingBar: LoadingBarService, private route: ActivatedRoute) {
     this.getScreenSize();
@@ -58,6 +59,11 @@ export class LoanOfferComponent implements OnInit {
     } else {
       this.direction = 'horizontal';
     }
+  }
+
+  search(value) {
+    const newBanks = banks.filter(bank => bank.name.toLowerCase().includes(value));
+    this.banks = newBanks;
   }
   ngOnInit(): void {
     this.route.params.subscribe((param: Params) => {

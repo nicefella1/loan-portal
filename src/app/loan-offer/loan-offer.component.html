@@ -26,40 +26,51 @@
                 <nz-step nzTitle="Authorization"></nz-step>
                 <nz-step nzTitle="Confirmation"></nz-step>
               </nz-steps> -->
-            
-              <ul class="step-indicators-wrapper">
-                <li class="step-indicators"
-                  [ngClass]="{'completed-step': current  >0, 'current-step': current  === 0}">
+
+              <div class="step-indicators-wrapper">
+                <div class="step-indicators"
+                  [ngClass]="{'completed-step': current  > 0, 'current-step': current  === 0}">
                   1
-                </li>
-                <li class="step-indicators"
-                  [ngClass]="{'completed-step': current  >1, 'current-step': current  === 1}">
+                </div>
+                <div class="offer-stepper-spacer" [ngClass]="{'offer-stepper-spacer-completed': current  > 0}">
+                </div>
+                <div class="step-indicators"
+                  [ngClass]="{'completed-step': current  > 1, 'current-step': current  === 1}">
                   2
-                </li>
-                <li class="step-indicators"
-                  [ngClass]="{'completed-step': current  >2, 'current-step': current  === 2}">
+                </div>
+                <div class="offer-stepper-spacer" [ngClass]="{'offer-stepper-spacer-completed': current  > 1}">
+                </div>
+                <div class="step-indicators"
+                  [ngClass]="{'completed-step': current  > 2, 'current-step': current  === 2}">
                   3
-                </li>
-                <li class="step-indicators"
-                  [ngClass]="{'completed-step': current  >3, 'current-step': current  === 3}">
+                </div>
+                <div class="offer-stepper-spacer" [ngClass]="{'offer-stepper-spacer-completed': current  > 2}">
+                </div>
+                <div class="step-indicators"
+                  [ngClass]="{'completed-step': current  > 3, 'current-step': current  === 3}">
                   4
-                </li>
-                <li class="step-indicators"
-                  [ngClass]="{'completed-step': current  >4, 'current-step': current  ===4}">
+                </div>
+                <div class="offer-stepper-spacer" [ngClass]="{'offer-stepper-spacer-completed': current  > 3}">
+                </div>
+                <div class="step-indicators"
+                  [ngClass]="{'completed-step': current  > 4, 'current-step': current  ===4}">
                   5
-                </li>
-                <li class="step-indicators"
-                [ngClass]="{'completed-step': current  >5, 'current-step': current  ===5}">
-                6
-              </li>
-              </ul>
+                </div>
+                <div class="offer-stepper-spacer" [ngClass]="{'offer-stepper-spacer-completed': current  > 4}">
+                </div>
+                <div class="step-indicators"
+                  [ngClass]="{'completed-step': current  > 5, 'current-step': current  ===5}">
+                  6
+                </div>
+              </div>
               <div class="steps-content">
                 <ng-container *ngIf="current === 0">
-                  <div nz-row nzType="flex" nzJustify="center">
+                  <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                       <ng-container *ngIf="loanOfferLoaded">
                         <ng-container *ngIf="loanOfferDetails; else noloan">
-                          <h4 class="font-bold text-pry">We are pleased to inform you that your loan request has been approved under
+                          <h4 class="font-bold text-pry">We are pleased to inform you that your loan request has been
+                            approved under
                             the following terms and conditions</h4>
                           <ng-container>
                             <nz-card>
@@ -104,9 +115,11 @@
                                 </tbody>
                               </nz-table>
                               <span class="font-bold mt-2 d-block">
-                                By Clicking Continue, I, {{loanOfferDetails.firstname}} {{loanOfferDetails.lastname}} accept the
-                                Credit Offer with a full understanding of the Loans <a href="https://creditwallet.ng/loanterm.pdf"
-                                  target="_blank" referrerpolicy="no-referrer">Terms and Conditions</a>
+                                By Clicking Continue, I, {{loanOfferDetails.firstname}} {{loanOfferDetails.lastname}}
+                                accept the
+                                Credit Offer with a full understanding of the Loans <a
+                                  href="https://creditwallet.ng/loanterm.pdf" target="_blank"
+                                  referrerpolicy="no-referrer">Terms and Conditions</a>
                               </span>
                             </nz-card>
                           </ng-container>
@@ -121,18 +134,20 @@
                   </div>
                 </ng-container>
                 <ng-container *ngIf="current === 1">
-                  <div nz-row nzType="flex" nzJustify="center">
+                  <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                       <form nz-form [formGroup]="bankAcountForm" (ngSubmit)="verifyBankAccount()">
-                        <h4 class="font-bold text-pry">To proceed please provide details of your preferred account to receive your
+                        <h4 class="font-bold text-pry">To proceed please provide details of your preferred account to
+                          receive your
                           funds</h4>
                         <div nz-row nzGutter="16">
                           <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12" nzOffset="0">
                             <nz-form-item>
                               <!-- <nz-form-label class="float-left">Bank Name</nz-form-label> -->
                               <nz-form-control nzErrorTip="Please select your Bank!">
-                                <nz-select nzAllowClear nzSize="large" formControlName="bankname" class="title-select"
-                                  nzPlaceHolder="Bank Name">
+                                <nz-select nzAllowClear nzShowSearch [nzFilterOption]="nzFilterOption"
+                                  (nzOnSearch)="search($event)" nzSize="large" formControlName="bankname"
+                                  class="title-select" nzPlaceHolder="Bank Name">
                                   <nz-option *ngFor="let bank of banks" [nzLabel]="bank.name" [nzValue]="bank.bankcode">
                                   </nz-option>
                                 </nz-select>
@@ -143,8 +158,8 @@
                             <nz-form-item>
                               <!-- <nz-form-label class="float-left">Account Number</nz-form-label> -->
                               <nz-form-control nzHasFeedback [nzErrorTip]="passwordErrorTpl!">
-                                <input nzSize="large" type="text" name="accountnumber" formControlName="accountnumber" nz-input
-                                  placeholder="Account Number" />
+                                <input nzSize="large" type="text" name="accountnumber" formControlName="accountnumber"
+                                  nz-input placeholder="Account Number" />
                                 <ng-template #passwordErrorTpl let-control>
                                   <ng-container *ngIf="control.hasError('required')">
                                     Please enter your account number!
@@ -168,19 +183,23 @@
                   </div>
                 </ng-container>
                 <ng-container *ngIf="current === 2">
-                  <div nz-row nzType="flex" nzJustify="center">
+                  <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
-            
+
                       <form nz-form>
                         <h4 class="font-bold text-pry">
-                          Please upload a copy of a valid identification document (Driver’s Licence, International Passport,
+                          Please upload a copy of a valid identification document (Driver’s Licence, International
+                          Passport,
                           National ID, Voter’s or Staff ID)
                         </h4>
                         <div nz-row nzGutter="16" nzJustify="center">
-                          <div nz-col class="gutter-row w-100" nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="8" nzOffset="0">
+                          <div nz-col class="gutter-row w-100" nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="8"
+                            nzOffset="0">
                             <nz-form-item class="mt-5 text-center">
-                              <nz-upload [nzShowUploadList]="false" [nzAction]="uploadUrl" [nzDisabled]="isLoading" [nzCustomRequest]="customReq">
-                                <button nzSize="large" nz-button><i nz-icon nzType="upload"></i><span>Select File</span></button>
+                              <nz-upload [nzShowUploadList]="false" [nzAction]="uploadUrl" [nzDisabled]="isLoading"
+                                [nzCustomRequest]="customReq">
+                                <button nzSize="large" nz-button><i nz-icon nzType="upload"></i><span>Select
+                                    File</span></button>
                               </nz-upload>
                               <div class="ant-upload-list-item" *ngIf="idCardUploadMessage">
                                 <div class="ant-upload-list-item-info">
@@ -193,7 +212,8 @@
                           </div>
                         </div>
                         <small>
-                          You can skip this step and send your identification document via WhatsApp to 07085698828 or email to
+                          You can skip this step and send your identification document via WhatsApp to 07085698828 or
+                          email to
                           support@creditwallet.ng
                         </small>
                       </form>
@@ -201,18 +221,21 @@
                   </div>
                 </ng-container>
                 <ng-container *ngIf="current === 3">
-                  <div nz-row nzType="flex" nzJustify="center">
+                  <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
-            
+
                       <form nz-form>
                         <h4 class="font-bold text-pry">
                           Please select a copy of your passport photograph and upload
                         </h4>
                         <div nz-row nzGutter="16">
-                          <div nz-col class="gutter-row w-100" nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="8" nzOffset="0">
+                          <div nz-col class="gutter-row w-100" nzXs="24" nzSm="24" nzMd="8" nzLg="8" nzXl="8"
+                            nzOffset="0">
                             <nz-form-item class="mt-5 text-center">
-                              <nz-upload [nzShowUploadList]="false" [nzAction]="uploadUrl" [nzDisabled]="isLoading" [nzCustomRequest]="customReq">
-                                <button nzSize="large" nz-button><i nz-icon nzType="upload"></i><span>Select File</span></button>
+                              <nz-upload [nzShowUploadList]="false" [nzAction]="uploadUrl" [nzDisabled]="isLoading"
+                                [nzCustomRequest]="customReq">
+                                <button nzSize="large" nz-button><i nz-icon nzType="upload"></i><span>Select
+                                    File</span></button>
                               </nz-upload>
                               <div class="ant-upload-list-item" *ngIf="passportUploadMessage">
                                 <div class="ant-upload-list-item-info">
@@ -225,7 +248,8 @@
                           </div>
                         </div>
                         <small>
-                          You can skip this step and send your identification document via WhatsApp to 07085698828 or email to
+                          You can skip this step and send your identification document via WhatsApp to 07085698828 or
+                          email to
                           support@creditwallet.ng
                         </small>
                       </form>
@@ -233,12 +257,13 @@
                   </div>
                 </ng-container>
                 <ng-container *ngIf="current === 4">
-                  <div nz-row nzType="flex" nzJustify="center">
+                  <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
-            
+
                       <form nz-form [formGroup]="authorizationForm" (ngSubmit)="authorizeRequest()">
                         <h4 class="font-bold text-pry">
-                          Please use the code that was sent to your email or phone number to authorize the transaction</h4>
+                          Please use the code that was sent to your email or phone number to authorize the transaction
+                        </h4>
                         <div nz-row nzGutter="16">
                           <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="16" nzLg="16" nzXl="16" nzOffset="0">
                             <nz-form-item>
@@ -262,13 +287,13 @@
                   </div>
                 </ng-container>
                 <ng-container *ngIf="current === 5">
-                  <div nz-row nzType="flex" nzJustify="center">
+                  <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                       <nz-card>
                         <ng-container class="animated fadeIn" *ngIf="applicationSuccess; else loanDetails">
                           <nz-card class="success-card text-center">
                             <i nz-icon [nzType]="'check-circle'" [nzTheme]="'twotone'" [nzTwotoneColor]="'#f56b2a'"></i>
-            
+
                             <span class="d-block mt-2">
                               Loan application successfull. Kindly await a response from our team!
                             </span>
@@ -277,7 +302,8 @@
                         <ng-template #loanDetails>
                           <ng-container>
                             <div class="mt-1">
-                              <h4 class="text-left font-bold text-pry">Kindly confirm the acceptance of your loan details below
+                              <h4 class="text-left font-bold text-pry">Kindly confirm the acceptance of your loan
+                                details below
                               </h4>
                               <nz-table nzTemplateMode nzBordered>
                                 <tbody>
@@ -325,27 +351,27 @@
                       </nz-card>
                     </div>
                   </div>
-            
+
                 </ng-container>
               </div>
             </div>
           </div>
           <div *ngIf="(loanOfferDetails && !applicationSuccess)"
-          class="steps-action d-flex flex-sm-column justify-content-between card-footer">
-          <button nz-button nzSize="large" nzType="default" (click)="pre()" *ngIf="current > 0">
-            <i nz-icon nzType="left"></i>
-            <span>Previous</span>
-          </button>
-          <button class="mt-sm-2 ml-md-auto" nz-button [nzLoading]="isLoading" nzSize="large" nzType="default"
-            (click)="next()" *ngIf="current < 5">
-            <span>{{current === 1? 'Start Application' : current === 2 && !idCardUploadMessage? 'Skip' : current === 3 && !passportUploadMessage? 'Skip': 'Continue'}}</span>
-            <i nz-icon nzType="right"></i>
-          </button>
-          <button class="mt-sm-2 ml-md-auto" nz-button [nzLoading]="isLoading" nzSize="large" nzType="primary"
-            (click)="done()" *ngIf="current === 5">
-            <span>Confirm</span>
-          </button>
-        </div>
+            class="steps-action d-flex flex-sm-column justify-content-between card-footer">
+            <button nz-button nzSize="large" nzType="default" (click)="pre()" *ngIf="current > 0">
+              <i nz-icon nzType="left"></i>
+              <span>Previous</span>
+            </button>
+            <button class="mt-sm-2 ml-md-auto" nz-button [nzLoading]="isLoading" nzSize="large" nzType="default"
+              (click)="next()" *ngIf="current < 5">
+              <span>{{current === 1? 'Start Application' : current === 2 && !idCardUploadMessage? 'Skip' : current === 3 && !passportUploadMessage? 'Skip': 'Continue'}}</span>
+              <i nz-icon nzType="right"></i>
+            </button>
+            <button class="mt-sm-2 ml-md-auto" nz-button [nzLoading]="isLoading" nzSize="large" nzType="primary"
+              (click)="done()" *ngIf="current === 5">
+              <span>Confirm</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
