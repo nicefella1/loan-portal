@@ -79,6 +79,12 @@ html, body{
 
 .box-left{
   margin-bottom: 2rem;
+  order: 2;
+  font-size: 50%;
+
+  .left-title{
+    display: none;
+  }
 }
 .step-indicators-wrapper {
   padding: 0 .5rem;
@@ -172,7 +178,10 @@ html, body{
 }
 
 .steps-content {
-  //   background-color: #fafafa;
+  .card-title{
+    font-size: 2rem;
+  }
+
 }
 
 .mt-1 {
@@ -370,6 +379,7 @@ html, body{
 .box-child-right {
   height: 100%;
   width: 100%;
+  margin-top: 3rem;
 }
 
 .sticky-button-wrapper {
@@ -378,7 +388,7 @@ html, body{
 }
 
 .largefont {
-  font-size: 250%;
+  font-size: 2rem
 }
 
 @media screen and (max-width: 480px) {
@@ -416,8 +426,15 @@ html, body{
 @media (min-width: 768px) {
   .steps-content {
     padding: 1.5rem;
+
+    .card-title{
+      font-size: 2.5rem;
+    }
   }
 
+  .largefont {
+    font-size: 250%;
+  }
   .card-body {
     padding: 2rem;
   }
@@ -432,6 +449,19 @@ html, body{
 
   .box-left{
     margin-bottom: 0;
+    order: 1;
+    font-size: inherit;
+
+    .left-title{
+      display: block;
+    }
+  }
+  .box-right{
+    order: 2;
+
+    .left-title{
+      display: none;
+    }
   }
   .parent-grid {
     display: grid;
@@ -460,6 +490,7 @@ html, body{
     width: 100%;
     // max-width: 500px;
     overflow: auto;
+    margin-top: 0;
   }
 }
 

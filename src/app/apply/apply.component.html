@@ -4,7 +4,7 @@
     <div class="parent-grid">
       <div class="box box-left">
         <div class="box-child w-md-75 mt-3">
-          <p class="largefont font-bold mb-md-5 font-6 text-md-left info-text font-weight-bold text-pry">
+          <p class="largefont font-bold mb-md-5 font-6 text-md-left info-text font-weight-bold text-pry left-title">
             Welcome. Get a loan in 30 minutes!
           </p>
           <p class="text-gray info-text text-md-left">
@@ -17,6 +17,9 @@
       </div>
       <div class="box box-right">
         <div class="box-child">
+          <p class="largefont font-bold mb-md-5 font-6 text-md-left info-text font-weight-bold text-pry left-title">
+            Welcome. Get a loan in 30 minutes!
+          </p>
           <div class="card shadow box-child-right">
             <div class="card-body">
               <div class="inner-content">
@@ -63,7 +66,7 @@
                     <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                       <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                         <form nz-form [formGroup]="startForm" (ngSubmit)="calculateRepaymentForm()">
-                          <h2 class="font-bold text-pry">Kindly provide the amount you want and your preferred duration
+                          <h2 class="font-bold text-pry card-title">Kindly provide the amount you want and your preferred duration
                           </h2>
                           <div nz-row nzGutter="16">
                             <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12">
@@ -108,7 +111,7 @@
                   <ng-container *ngIf="current === 1">
                     <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                       <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
-                        <h2 class="font-bold text-pry">Loan Breakdown</h2>
+                        <h2 class="font-bold text-pry card-title">Loan Breakdown</h2>
                         <ng-container *ngIf="loanBreakdown">
                           <nz-card>
                             <nz-table nzTemplateMode nzBordered>
@@ -162,7 +165,7 @@
                     <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                       <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                         <form nz-form [formGroup]="personalForm" (ngSubmit)="collectPersonalInfo()">
-                          <h2 class="font-bold text-pry">Personal Information</h2>
+                          <h2 class="font-bold text-pry card-title">Personal Information</h2>
                           <div nz-row nzGutter="16">
                             <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="24" nzLg="8" nzXl="8" nzOffset="0">
                               <nz-form-item>
@@ -248,7 +251,7 @@
                     <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                       <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                         <form nz-form [formGroup]="contactForm" (ngSubmit)="collectContactlInfo()">
-                          <h2 class="font-bold text-pry">Contact Information</h2>
+                          <h2 class="font-bold text-pry card-title">Contact Information</h2>
                           <div nz-row nzGutter="16">
                             <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12"
                               nzOffset="0">
@@ -332,7 +335,7 @@
                     <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                       <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                         <form nz-form [formGroup]="workForm" (ngSubmit)="collectEmploymentlInfo()">
-                          <h2 class="font-bold text-pry">Employment Information</h2>
+                          <h2 class="font-bold text-pry card-title">Employment Information</h2>
                           <div nz-row nzGutter="16">
                             <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="12" nzLg="12" nzXl="12"
                               nzOffset="0">
@@ -434,7 +437,7 @@
                             <ng-container *ngIf="fullApplicationDetails">
                               <div class="mt-1">
                                 <div class="d-flex justify-content-between mb-1">
-                                  <h4 class="text-left font-bold text-pry">Loan Information</h4>
+                                  <h4 class="text-left font-bold text-pry card-title">Loan Information</h4>
                                   <button nz-button nzSize="small" nzType="primary" (click)="editInfo(0)"
                                     *ngIf="current > 0">
                                     <i nz-icon nzType="edit" nzTheme="outline"></i>

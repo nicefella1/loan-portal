@@ -2,7 +2,7 @@
   <div class="parent-grid">
     <div class="box box-left">
       <div class="box-child w-md-75 mt-3">
-        <p class="largefont font-bold mb-md-5 font-6 text-md-left info-text font-weight-bold text-pry">
+        <p class="largefont font-bold mb-md-5 font-6 text-md-left info-text font-weight-bold text-pry left-title">
           Hurray! Your loan is ready
         </p>
         <p class="text-gray info-text text-md-left">
@@ -15,6 +15,9 @@
     </div>
     <div class="box box-right">
       <div class="box-child">
+        <p class="largefont font-bold mb-md-5 font-6 text-md-left info-text font-weight-bold text-pry left-title">
+        Hurray! Your loan is ready
+      </p>
         <div class="card shadow box-child-right">
           <div class="card-body">
             <div class="inner-content">
@@ -63,7 +66,7 @@
                       <ng-container *ngIf="loanOfferLoaded">
                         <ng-container *ngIf="loans; else noloan">
                           <nz-card class="success-card">
-                            <p class="gray text-center">We are pleased to inform you that your loan request has been
+                            <p class="gray text-center card-title">We are pleased to inform you that your loan request has been
                               pre-approved
                               under the following terms and
                               conditions</p>
@@ -149,7 +152,7 @@
                   <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                       <form nz-form [formGroup]="bankAcountForm" (ngSubmit)="verifyBankAccount()">
-                        <h4 class="font-bold text-pry">To proceed please provide details of your preferred account to
+                        <h4 class="font-bold text-pry card-title">To proceed please provide details of your preferred account to
                           receive your
                           funds</h4>
                         <div nz-row nzGutter="16">
@@ -199,7 +202,7 @@
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
 
                       <form nz-form>
-                        <h4 class="font-bold text-pry">
+                        <h4 class="font-bold text-pry card-title">
                           Please upload a copy of a valid identification document (Driver’s Licence, International
                           Passport,
                           National ID, Voter’s or Staff ID)
@@ -237,7 +240,7 @@
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
 
                       <form nz-form>
-                        <h4 class="font-bold text-pry">
+                        <h4 class="font-bold text-pry card-title">
                           Please select a copy of your passport photograph and upload
                         </h4>
                         <div nz-row nzGutter="16">
@@ -283,7 +286,7 @@
                         <ng-template #loanDetails>
                           <ng-container>
                             <div class="mt-1">
-                              <h4 class="text-left font-bold text-pry">Kindly confirm the acceptance of your loan
+                              <h4 class="text-left font-bold text-pry card-title">Kindly confirm the acceptance of your loan
                                 details below
                               </h4>
                               <nz-table nzTemplateMode nzBordered>
