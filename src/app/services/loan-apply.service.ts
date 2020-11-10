@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class LoanApplyService {
+  modulePath = 'loan';
   loanOfferCache = new BehaviorSubject<any>( JSON.parse(sessionStorage.getItem('loanDetails')) || null);
   constructor(private http: HttpClient) { }
 
@@ -15,7 +16,7 @@ export class LoanApplyService {
   }
 
   loanApply(loandetails) {
-    return this.http.post(`${environment.loanUrl}apply/new`, loandetails);
+    return this.http.post(`${environment.loanV2Url}${this.modulePath}/apply/new`, loandetails);
   }
 
   automateOffer(id) {
@@ -23,7 +24,7 @@ export class LoanApplyService {
   }
 
   calculaterepayment(params) {
-    let body = JSON.stringify(params);
+    const body = JSON.stringify(params);
     return this.http.post(`${environment.loanUrl}calculate-repayment`, body);
   }
   viewLoanOffer(id) {

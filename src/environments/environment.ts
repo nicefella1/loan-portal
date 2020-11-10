@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  loanUrl: 'https://system.creditwallet.ng/public/'
+  loanUrl: 'https://system.creditwallet.ng/public/',
+  loanV2Url: 'https://api.creditwallet.ng/Creditwallet/public/api/'
 };
 
 /*

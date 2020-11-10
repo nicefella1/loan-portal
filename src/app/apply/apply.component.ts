@@ -10,6 +10,7 @@ import { LoadingBarService } from '@ngx-loading-bar/core';
 import { Observable, Observer } from 'rxjs';
 import { Router } from '@angular/router';
 import { marketers } from '../marketers';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
@@ -190,10 +191,15 @@ export class ApplyComponent implements OnInit {
       } else {
         this.message.error(data.message);
       }
-    }, error => {
+    } , (error: HttpErrorResponse) => {
+      // console.log(error);
       this.isLoading = false;
-      this.loadingBar.complete();
-      this.message.error('Error connecting. Please try again');
+      this.loadingBar.stop();
+      if (error.status >= 400 && error.status <= 415) {
+        this.message.error(error.error.message);
+      } else {
+        this.message.error('An error has occured. Please try again later');
+      }
     });
   }
   getBankName(value) {
