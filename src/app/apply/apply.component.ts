@@ -177,6 +177,7 @@ export class ApplyComponent implements OnInit {
     this.service.loanApply(loan).subscribe((data: any) => {
       this.isLoading = false;
       this.loadingBar.complete();
+      console.log(data);
       if (data.status === 'success') {
         this.applicationSuccess = true;
         if (data.returnstatus === false) {
@@ -185,14 +186,14 @@ export class ApplyComponent implements OnInit {
         } else {
           this.automate = true;
           this.processing = true;
-          this.router.navigate([`/offer/${data.id}`]);
           // this.automateFunds(data.id);
+          this.checkForOpenLoans(loan.ippisnumber, data.id);
         }
       } else {
         this.message.error(data.message);
       }
     } , (error: HttpErrorResponse) => {
-      // console.log(error);
+      console.log(error);
       this.isLoading = false;
       this.loadingBar.stop();
       if (error.status >= 400 && error.status <= 415) {
@@ -355,4 +356,30 @@ export class ApplyComponent implements OnInit {
   onChange(result: Date): void {
   }
 
+
+  checkForOpenLoans(ippisnumber, id) {
+    const loanDiskData = {
+      ippisnumber,
+      id,
+    };
+    this.loadingBar.start();
+    this.service.checkForOpenLoans(loanDiskData).subscribe((data: any) => {
+      this.loadingBar.stop();
+      console.log(data);
+      if (data.returnstatus) {
+        this.router.navigate([`/offer/${id}`]);
+      } else {
+        this.message.error(data.message);
+      }
+    }, (error: HttpErrorResponse) => {
+      console.log(error);
+      this.isLoading = false;
+      this.loadingBar.stop();
+      if (error.status >= 400 && error.status <= 415) {
+        this.message.error(error.error.message);
+      } else {
+        this.message.error('An error has occured. Please try again later');
+      }
+    });
+  }
 }

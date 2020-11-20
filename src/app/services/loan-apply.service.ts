@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class LoanApplyService {
-  modulePath = 'loan';
+  modulePath = 'loans';
   loanOfferCache = new BehaviorSubject<any>( JSON.parse(sessionStorage.getItem('loanDetails')) || null);
   constructor(private http: HttpClient) { }
 
@@ -16,16 +16,19 @@ export class LoanApplyService {
   }
 
   loanApply(loandetails) {
-    return this.http.post(`${environment.loanV2Url}${this.modulePath}/apply/new`, loandetails);
+    return this.http.post(`${environment.loanV2Url}${this.modulePath}/new/apply/new`, loandetails);
   }
 
+  checkForOpenLoans(loandetails) {
+    return this.http.post(`${environment.loanV2Url}${this.modulePath}/new/loandisk`, loandetails);
+  }
   automateOffer(id) {
-    return this.http.post(`${environment.loanUrl}loan/offer/auto`, { id });
+    return this.http.post(`${environment.loanV2Url}${this.modulePath}/new/process/details`, { id });
   }
 
   calculaterepayment(params) {
-    const body = JSON.stringify(params);
-    return this.http.post(`${environment.loanUrl}calculate-repayment`, body);
+    // const body = JSON.stringify(params);
+    return this.http.post(`${environment.loanV2Url}${this.modulePath}/new/offer/details`, params);
   }
   viewLoanOffer(id) {
     return this.http.post(`${environment.loanUrl}loan/offer/view`, { id });
@@ -52,7 +55,18 @@ export class LoanApplyService {
     return this.http.post(`${environment.loanUrl}loan/finalize/new`, loan);
   }
 
+  confirmCreditCode(id, code) {
+    // return this.http.post(`${environment.loanUrl}confirm/code`, { id, code });
+    return this.http.post(`${environment.loanV2Url}${this.modulePath}/new/confirm/code`, { id, code });
+  }
+
   confirmLoanAutoOffer(loan) {
-    return this.http.post(`${environment.loanUrl}loan/transaction/complete`, loan);
+    // return this.http.post(`${environment.loanUrl}loan/transaction/complete`, loan)
+    return this.http.post(`${environment.loanV2Url}${this.modulePath}/new/submit`, loan);
+  }
+
+  verifyOnPaystack(id) {
+    // return this.http.post(`${environment.loanUrl}confirm/code`, { id, code });
+    return this.http.post(`${environment.loanV2Url}${this.modulePath}/new/paystack`, { id });
   }
 }

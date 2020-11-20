@@ -34,29 +34,35 @@
                   [ngClass]="{'completed-step': current  > 0, 'current-step': current  === 0}">
                   1
                 </div>
-                <div class="stepper-spacer" [ngClass]="{'stepper-spacer-completed': current  > 0}">
+                <div class="stepper-spacer--2" [ngClass]="{'stepper-spacer-completed': current  > 0}">
                 </div>
                 <div class="step-indicators"
                   [ngClass]="{'completed-step': current  > 1, 'current-step': current  === 1}">
                   2
                 </div>
-                <div class="stepper-spacer" [ngClass]="{'stepper-spacer-completed': current  > 1}">
+                <div class="stepper-spacer--2" [ngClass]="{'stepper-spacer-completed': current  > 1}">
                 </div>
                 <div class="step-indicators"
                   [ngClass]="{'completed-step': current  > 2, 'current-step': current  === 2}">
                   3
                 </div>
-                <div class="stepper-spacer" [ngClass]="{'stepper-spacer-completed': current  > 2}">
+                <div class="stepper-spacer--2" [ngClass]="{'stepper-spacer-completed': current  > 2}">
                 </div>
                 <div class="step-indicators"
                   [ngClass]="{'completed-step': current  > 3, 'current-step': current  === 3}">
                   4
                 </div>
-                <div class="stepper-spacer" [ngClass]="{'stepper-spacer-completed': current  > 3}">
+                <div class="stepper-spacer--2" [ngClass]="{'stepper-spacer-completed': current  > 3}">
                 </div>
                 <div class="step-indicators"
                   [ngClass]="{'completed-step': current  > 4, 'current-step': current  === 4}">
                   5
+                </div>
+                <div class="stepper-spacer--2" [ngClass]="{'stepper-spacer-completed': current  > 3}">
+                </div>
+                <div class="step-indicators"
+                  [ngClass]="{'completed-step': current  > 5, 'current-step': current  === 5}">
+                  6
                 </div>
               </div>
               <div class="steps-content">
@@ -75,13 +81,13 @@
                             <h1 class="loan-amount"><b>{{loanamount | currency:'₦ '}}</b>
                               <p class="gray" style="font-size:12px">Pre-approved Loan Amount </p>
                             </h1>
-                            <ng5-slider [(value)]="loanamount" (valueChange)="setLoanRepayment()" [options]="options">
+                            <ng5-slider [(value)]="loanamount" (userChangeEnd)="setLoanRepayment($event)" [options]="options">
                             </ng5-slider>
                             <p style="text-align:center"><span class="gray" style="font-size:12px">Drag the slider to
                                 change loan
                                 amount</span></p>
                             <br>
-                            <div *ngIf="verification == null">
+                            <!-- <div *ngIf="verification == null">
                               <h1 class="duration"><b>{{durationValue}} months</b>
                                 <p class="gray" style="font-size:12px">Pre-approved Loan Duration </p>
                               </h1>
@@ -90,8 +96,8 @@
                               <p style="text-align:center"><span class="gray" style="font-size:12px">Drag the slider to
                                   change
                                   duration</span></p>
-                            </div>
-                            <div *ngIf="verification != null">
+                            </div> -->
+                            <div>
                               <h1 class="duration"><b>{{durationValue}} months</b>
                                 <p class="gray" style="font-size:12px">Pre-approved Loan Duration </p>
                               </h1>
@@ -132,7 +138,7 @@
                               </tbody>
                             </nz-table>
                             <p class="addFont" style="font-size:17px"><em>By Clicking Continue, I,
-                                {{loans?.loan.firstname | titlecase}} {{loans?.loan.lastname | titlecase}} accept the
+                                {{loans?.loan_application.firstname | titlecase}} {{loans?.loan_application.lastname | titlecase}} accept the
                                 Credit Offer
                                 with a full understanding of the Loans <a
                                   href="https://creditwallet.ng/loanterm.pdf">Terms and
@@ -212,7 +218,7 @@
                             nzOffset="0">
                             <nz-form-item class="mt-5 text-center">
                               <nz-upload [nzShowUploadList]="false" [nzAction]="uploadUrl" [nzCustomRequest]="customReq"
-                                [nzDisabled]="isLoading">
+                                [nzDisabled]="isLoading" [nzAccept]="acceptParams">
                                 <button nzSize="large" nz-button><i nz-icon nzType="upload"></i><span>Select
                                     File</span></button>
                               </nz-upload>
@@ -248,7 +254,7 @@
                             nzOffset="0">
                             <nz-form-item class="mt-5 text-center">
                               <nz-upload [nzShowUploadList]="false" [nzAction]="uploadUrl" [nzCustomRequest]="customReq"
-                                [nzDisabled]="isLoading">
+                                [nzDisabled]="isLoading" [nzAccept]="acceptParams">
                                 <button nzSize="large" nz-button><i nz-icon nzType="upload"></i><span>Select
                                     File</span></button>
                               </nz-upload>
@@ -271,7 +277,34 @@
                     </div>
                   </div>
                 </ng-container>
+
                 <ng-container *ngIf="current === 4">
+                  <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
+                    <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
+
+                      <form nz-form [formGroup]="authorizationForm" (ngSubmit)="confirmCreditCode()">
+                        <h4 class="font-bold text-pry card-title">
+                          Please use the code that was sent to your phone number to confirm this loan offer
+                        </h4>
+                        <div nz-row nzGutter="16">
+                          <div nz-col class="gutter-row" nzXs="8" nzSm="8" nzMd="4" nzLg="4" nzXl="4" nzOffset="8">
+                            <nz-form-item>
+                              <!-- <nz-form-label class="float-left">Code</nz-form-label> -->
+                              <nz-form-control nzHasFeedback nzErrorTip="Enter Code!">
+                                <input nzSize="large" type="text" formControlName="code" nz-input placeholder="Code" />
+                              </nz-form-control>
+                            </nz-form-item>
+                          </div>
+                        </div>
+                      </form>
+                      <div class="text-center my-2">
+                        <a (click)="skipCodeVerification()">I did not get any code</a>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="current === 5">
                   <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                       <nz-card>
@@ -293,11 +326,11 @@
                                 <tbody>
                                   <tr>
                                     <td class="font-bold">Borrower</td>
-                                    <td>{{loans.loan.firstname}} {{loans.loan.lastname}}</td>
+                                    <td>{{loans.loan_application.firstname}} {{loans.loan_application.lastname}}</td>
                                   </tr>
                                   <tr>
                                     <td class="font-bold">Borrower Employer</td>
-                                    <td>{{loans.loan.place_of_work}}</td>
+                                    <td>{{loans.loan_application.place_of_work}}</td>
                                   </tr>
                                   <tr>
                                     <td class="font-bold">Loan Amount</td>
@@ -346,12 +379,12 @@
               <span>Previous</span>
             </button>
             <button class="mt-sm-2 ml-md-auto" nz-button [nzLoading]="isLoading" nzSize="large" nzType="default"
-              (click)="next()" *ngIf="current < 4">
+              (click)="next()" *ngIf="current < 5">
               <span>{{current === 1? 'Continue' : current === 2 && !idCardUploadMessage? 'Skip' : current === 3 && !passportUploadMessage? 'Skip': 'Continue'}}</span>
               <i nz-icon nzType="right"></i>
             </button>
             <button class="mt-sm-2 ml-md-auto" nz-button [nzLoading]="isLoading" nzSize="large" nzType="primary"
-              (click)="done()" *ngIf="current === 4">
+              (click)="done()" *ngIf="current === 5">
               <span>Confirm</span>
             </button>
           </div>

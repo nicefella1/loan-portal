@@ -9,7 +9,7 @@ import { tenors } from '../duration';
 import { banks } from '../banks';
 import { states } from '../states';
 import { Observable, Observer } from 'rxjs';
-import { HttpRequest, HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpRequest, HttpEvent, HttpEventType, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Options, LabelType, ChangeContext } from 'ng5-slider';
@@ -21,7 +21,8 @@ import { Options, LabelType, ChangeContext } from 'ng5-slider';
 })
 export class OfferComponent implements OnInit {
   current = 0;
-  uploadUrl = `${environment.loanUrl}passport/upload`;
+  acceptParams = '.png, .jpg, .jpeg, .pdf';
+  uploadUrl = `${environment.loanV2Url}loans/upload`;
   minDate = new Date('2001-12-31');
   duration = tenors;
   banks = banks.sort((a , b) => a.name.localeCompare(b.name));
@@ -114,7 +115,7 @@ export class OfferComponent implements OnInit {
         accountnumber: [null, [this.confirmAcctNumLengthValidator]],
       });
       this.authorizationForm = this.fb.group({
-        email: [{value: null, disabled: true}],
+        // email: [{value: null, disabled: true}],
         code: [null, [Validators.required]]
       });
     }
@@ -126,6 +127,7 @@ export class OfferComponent implements OnInit {
     viewLoanOffer(loanid) {
       this.loadingBar.start();
       this.service.automateOffer(loanid).subscribe((data: any) => {
+        console.log(data);
         this.loanOfferLoaded = true;
         this.loadingBar.complete();
         if (data.status === 'success' && data.returnstatus === true) {
@@ -133,23 +135,23 @@ export class OfferComponent implements OnInit {
           this.salaryhistory = data.salaryhistory;
           this.loanhistory = data.loanhistory;
           this.verification = data.verification;
-          window.localStorage.setItem('emailaddress', this.loans.loan.email);
-          window.localStorage.setItem('firstname', this.loans.loan.firstname);
-          window.localStorage.setItem('lastname', this.loans.loan.lastname);
-          this.loanamount = data.loanamount;
-          this.durationValue = data.duration;
+          window.localStorage.setItem('emailaddress', this.loans.loan_application.email);
+          window.localStorage.setItem('firstname', this.loans.loan_application.firstname);
+          window.localStorage.setItem('lastname', this.loans.loan_application.lastname);
+          // this.loanamount = data.loanamount;loan_application
+          this.loanamount = data.loan_application.loan_amount;
+          // this.durationValue = data.duration;
+          this.durationValue = data.loan_application.tenor;
           this.actualtenor = data.actualtenor;
           const newOptions = Object.assign({}, this.options);
           const newDurationOptions = Object.assign({}, this.durationOptions);
-          if (this.verification) {
-            newDurationOptions.ceil = data.duration;
-          } else {
-            newDurationOptions.ceil = 6;
-          }
-          newOptions.ceil = data.loanamount;
+          newDurationOptions.ceil = 12;
+          // newOptions.ceil = data.loanamount;
+          newOptions.ceil = data.loan_application.loan_amount;
           this.durationOptions = newDurationOptions;
           this.options = newOptions;
-          this.setLoanRepayment();
+          // this.setLoanRepayment();
+          this.calcRepayment();
         } else if (data.status === 'success' && data.returnstatus === false) {
 
         } else {
@@ -157,6 +159,7 @@ export class OfferComponent implements OnInit {
         }
       }, error => {
         this.isLoading = false;
+        console.log(error);
         this.loadingBar.complete();
         this.message.error('Error connecting. Please try again');
       });
@@ -187,73 +190,125 @@ export class OfferComponent implements OnInit {
       } else if (this.current === 3) {
         this.collectIdCard();
         this.current += 1;
+        this.sendPaystackCode();
+      } else if (this.current === 4) {
+        this.submitAuthorizationForm();
+        if (this.authorizationForm.invalid) {
+          return;
+        }
+        this.confirmCreditCode();
       } else {
         this.current += 1;
       }
+    }
+
+    skipCodeVerification() {
+      return this.current += 1;
     }
     done(): void {
       const loan = {
         id: this.loanOfferId,
         loan_amount: this.loanamount,
-        monthly_repayment: this.monthlyrepayment,
-        duration: this.durationValue,
-        idcard: this.idCardUploadMessage ? this.idCardUploadMessage : '',
-        passport: this.passportUploadMessage ? this.passportUploadMessage : ''
+        duration: this.durationValue
+        // monthly_repayment: this.monthlyrepayment,
+        // idcard: this.idCardUploadMessage ? this.idCardUploadMessage : '',
+        // passport: this.passportUploadMessage ? this.passportUploadMessage : ''
       };
+      console.log(loan);
       this.isLoading = true;
       this.loadingBar.start();
       this.service.confirmLoanAutoOffer(loan).subscribe((data: any) => {
+        console.log(data);
         this.isLoading = false;
         this.loadingBar.complete();
         if (data.status === 'success') {
           this.applicationSuccess = true;
-          this.message.success(data.message);
+          // this.message.success(data.message);
         } else {
           this.message.error(data.message);
         }
-      }, error => {
+      }, (error: HttpErrorResponse) => {
+        console.log(error);
         this.isLoading = false;
-        this.loadingBar.complete();
-        this.message.error('Error connecting. Please try again');
+        this.loadingBar.stop();
+        if (error.status >= 400 && error.status <= 415) {
+          this.message.error(error.error.message ? error.error.message : 'An unknown error has occured');
+        } else {
+          this.message.error('Error connecting to server. Please try again later');
+        }
       });
     }
 
-    setLoanRepayment() {
-      const interestperday = 0.0025 * this.actualtenor;
-      this.insurance = 0.03 * this.loanamount;
-      this.disbursementfees = 1250;
-      this.interest = interestperday * this.loanamount;
-      this.monthlyrepayment = (this.interest + this.loanamount + this.insurance + this.disbursementfees) / this.durationValue;
+    sendPaystackCode() {
+      this.loadingBar.start();
+      this.isLoading = true;
+      this.service.verifyOnPaystack(this.loanOfferId).subscribe((data: any) => {
+        this.loadingBar.complete();
+        this.isLoading = false;
+        console.log(data);
+        if (data.status === 'success') {
+          // this.current += 1;
+        } else {
+          this.message.error(data.message);
+        }
+      }, (error: HttpErrorResponse) => {
+        console.log(error);
+        this.isLoading = false;
+        this.loadingBar.stop();
+        if (error.status >= 400 && error.status <= 415) {
+          this.message.error(error.error.message ? error.error.message : 'An unknown error has occured');
+        } else {
+          this.message.error('Error connecting to server. Please try again later');
+        }
+      });
+    }
+    setLoanRepayment(event: ChangeContext) {
+      // const interestperday = 0.0025 * this.actualtenor;
+      // this.insurance = 0.03 * this.loanamount;
+      // this.disbursementfees = 1250;
+      // this.interest = interestperday * this.loanamount;
+      // this.monthlyrepayment = (this.interest + this.loanamount + this.insurance + this.disbursementfees) / this.durationValue;
+      this.loanamount = event.value;
+      console.log(this.loanamount);
+      this.calcRepayment();
     }
     changeduration(event: ChangeContext) {
       this.durationValue = event.value;
-      this.setDuration(this.durationValue);
+      this.calcRepayment();
     }
 
-    setDuration(duration) {
+    calcRepayment() {
       const json = {
-        tenor: duration,
+        duration: this.durationValue,
         amount: this.loanamount
       };
+      // console.log(json);
       this.loadingBar.start();
       this.isLoading = true;
       this.service.calculaterepayment(json)
         .subscribe((data: any) => {
+          console.log(data);
           this.loadingBar.stop();
           this.isLoading = false;
           if (data.status === 'success') {
-            this.actualtenor = data.actualtenor;
-            this.monthlyrepayment = data.monthlyrepayment;
+            this.actualtenor = data.details.actualtenor;
+            this.monthlyrepayment = data.details.monthlyrepayment;
+            this.insurance = data.details.insurance;
+            this.disbursementfees = data.details.disbursementfees;
           } else {
             this.message.error(data.message);
           }
         },
-          (error) => {
-            this.loadingBar.stop();
-            this.isLoading = false;
-            this.message.error('Network error. Please try again');
+        (error: HttpErrorResponse) => {
+          console.log(error);
+          this.isLoading = false;
+          this.loadingBar.stop();
+          if (error.status >= 400 && error.status <= 415) {
+            this.message.error(error.error.message ? error.error.message : 'An unknown error has occured');
+          } else {
+            this.message.error('Error connecting to server. Please try again later');
           }
-        );
+        });
     }
     verifyBankAccount() {
       const bankname = this.bankAcountForm.get('bankname').value;
@@ -268,10 +323,15 @@ export class OfferComponent implements OnInit {
         } else {
           this.message.error(data.message);
         }
-      }, err => {
+      }, (error: HttpErrorResponse) => {
+        console.log(error);
         this.isLoading = false;
-        this.loadingBar.complete();
-        this.message.error('Error connecting to server. Please try again later');
+        this.loadingBar.stop();
+        if (error.status >= 400 && error.status <= 415) {
+          this.message.error(error.error.message ? error.error.message : 'An unknown error has occured');
+        } else {
+          this.message.error('Error connecting to server. Please try again later');
+        }
       });
     }
 
@@ -291,17 +351,25 @@ export class OfferComponent implements OnInit {
         } else {
           this.message.error(data.message);
         }
-      }, err => {
+      }, (error: HttpErrorResponse) => {
+        console.log(error);
         this.isLoading = false;
-        this.loadingBar.complete();
-        this.message.error('Error connecting to server. Please try again later');
+        this.loadingBar.stop();
+        if (error.status >= 400 && error.status <= 415) {
+          this.message.error(error.error.message ? error.error.message : 'An unknown error has occured');
+        } else {
+          this.message.error('Error connecting to server. Please try again later');
+        }
       });
     }
     customReq = (item: UploadXHRArgs) => {
       // Create a FormData here to store files and other parameters.
       const formData = new FormData();
       // tslint:disable-next-line:no-any
-      formData.append('file[]', item.file as any, item.file.name as any);
+      // formData.append('file[]', item.file as any, item.file.name as any);
+      formData.append('file', item.file as any);
+      formData.append('type', this.current === 2 ? '0' : '1');
+      formData.append('id', this.loanOfferId);
       // tslint:disable-next-line: no-non-null-assertion
       const req = new HttpRequest('POST', item.action!, formData, {
         reportProgress: true,
@@ -340,11 +408,25 @@ export class OfferComponent implements OnInit {
             }
           }
         },
-        err => {
-          this.loadingBar.complete();
+        // err => {
+        //   console.log(err);
+        //   this.loadingBar.complete();
+        //   this.isLoading = false;
+        //   // tslint:disable-next-line: no-non-null-assertion
+        //   item.onError!(err, item.file!);
+        // }
+
+        (error: HttpErrorResponse) => {
+          console.log(error);
           this.isLoading = false;
+          this.loadingBar.stop();
+          if (error.status >= 400 && error.status <= 415) {
+            this.message.error(error.error.message ? error.error.message : 'An unknown error has occured');
+          } else {
+            this.message.error('Error connecting to server. Please try again later');
+          }
           // tslint:disable-next-line: no-non-null-assertion
-          item.onError!(err, item.file!);
+          item.onError!(error, item.file!);
         }
       );
     }
@@ -355,25 +437,30 @@ export class OfferComponent implements OnInit {
     collectIdCard() {
       this.fullApplicationDetails = { ...this.fullApplicationDetails, };
     }
-    // authorizeRequest() {
-    //   this.fullApplicationDetails = { ...this.fullApplicationDetails, ...this.authorizationForm.value };
-    //   const code = this.authorizationForm.get('code').value;
-    //   this.loadingBar.start();
-    //   this.isLoading = true;
-    //   this.service.authorizeLoanReq(this.loanOfferId, code).subscribe((data: any) => {
-    //     this.loadingBar.complete();
-    //     this.isLoading = false;
-    //     if (data.status === 'success') {
-    //       this.current += 1;
-    //     } else {
-    //       this.message.error(data.message);
-    //     }
-    //   }, err => {
-    //     this.loadingBar.complete();
-    //     this.isLoading = false;
-    //     this.message.error('Error connecting to server. Please try again');
-    //   });
-    // }
+
+    confirmCreditCode() {
+      const code = this.authorizationForm.get('code').value;
+      this.loadingBar.start();
+      this.isLoading = true;
+      this.service.confirmCreditCode(this.loanOfferId, code).subscribe((data: any) => {
+        this.loadingBar.complete();
+        this.isLoading = false;
+        if (data.status === 'success') {
+          this.current += 1;
+        } else {
+          this.message.error(data.message);
+        }
+      }, (error: HttpErrorResponse) => {
+        console.log(error);
+        this.isLoading = false;
+        this.loadingBar.stop();
+        if (error.status >= 400 && error.status <= 415) {
+          this.message.error(error.error.message ? error.error.message : 'An unknown error has occured');
+        } else {
+          this.message.error('Error connecting to server. Please try again later');
+        }
+      });
+    }
 
     invalidAcctAsyncValidator = (control: FormControl) =>
       new Observable((observer: Observer<ValidationErrors | null>) => {
