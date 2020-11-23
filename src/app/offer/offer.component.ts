@@ -97,8 +97,8 @@ export class OfferComponent implements OnInit {
   };
 
   otpCode: any;
-  nzFilterOption = () => true;
   codeSent: boolean;
+  nzFilterOption = () => true;
 
   constructor(private fb: FormBuilder, private service: LoanApplyService,
               private message: NzMessageService, private loadingBar: LoadingBarService, private route: ActivatedRoute) {
@@ -138,7 +138,6 @@ export class OfferComponent implements OnInit {
     viewLoanOffer(loanid) {
       this.loadingBar.start();
       this.service.automateOffer(loanid).subscribe((data: any) => {
-        console.log(data);
         this.loanOfferLoaded = true;
         this.loadingBar.complete();
         if (data.status === 'success' && data.returnstatus === true) {
@@ -168,19 +167,23 @@ export class OfferComponent implements OnInit {
         } else {
           this.message.error(data.message);
         }
-      }, error => {
+      }, (error: HttpErrorResponse) => {
         this.isLoading = false;
-        console.log(error);
-        this.loadingBar.complete();
-        this.message.error('Error connecting. Please try again');
+        this.loanOfferLoaded = true;
+        this.loadingBar.stop();
+        if (error.status >= 400 && error.status <= 415) {
+          this.message.error(error.error.message);
+        } else {
+          this.message.error('An error has occured. Please try again later');
+        }
       });
     }
 
     pre(): void {
-      if (this.current === 5) {
-        this.codeSent = false;
-        this.sendPaystackCode();
-      }
+      // if (this.current === 5) {
+      //   this.codeSent = false;
+      //   this.sendPaystackCode();
+      // }
       this.current -= 1;
     }
 
@@ -205,17 +208,19 @@ export class OfferComponent implements OnInit {
       } else if (this.current === 3) {
         this.collectIdCard();
         this.current += 1;
-        this.sendPaystackCode();
-      } else if (this.current === 4) {
-        this.submitAuthorizationForm();
-        // if (this.authorizationForm.invalid) {
-        //   return;
-        // }
-        if (this.otpCode.length < 6) {
-          return;
-        }
-        this.confirmCreditCode();
-      } else {
+        // this.sendPaystackCode();
+      }
+      // else if (this.current === 4) {
+      //   this.submitAuthorizationForm();
+      //   // if (this.authorizationForm.invalid) {
+      //   //   return;
+      //   // }
+      //   if (this.otpCode.length < 6) {
+      //     return;
+      //   }
+      //   this.confirmCreditCode();
+      // }
+      else {
         this.current += 1;
       }
     }
@@ -234,11 +239,9 @@ export class OfferComponent implements OnInit {
         // idcard: this.idCardUploadMessage ? this.idCardUploadMessage : '',
         // passport: this.passportUploadMessage ? this.passportUploadMessage : ''
       };
-      console.log(loan);
       this.isLoading = true;
       this.loadingBar.start();
       this.service.confirmLoanAutoOffer(loan).subscribe((data: any) => {
-        console.log(data);
         this.isLoading = false;
         this.loadingBar.complete();
         if (data.status === 'success') {
@@ -248,7 +251,6 @@ export class OfferComponent implements OnInit {
           this.message.error(data.message);
         }
       }, (error: HttpErrorResponse) => {
-        console.log(error);
         this.isLoading = false;
         this.loadingBar.stop();
         if (error.status >= 400 && error.status <= 415) {
@@ -265,7 +267,6 @@ export class OfferComponent implements OnInit {
       this.service.verifyOnPaystack(this.loanOfferId).subscribe((data: any) => {
         this.loadingBar.complete();
         this.isLoading = false;
-        console.log(data);
         if (data.status === 'success') {
           // this.current += 1;
           this.codeSent = true;
@@ -273,7 +274,6 @@ export class OfferComponent implements OnInit {
           this.message.error(data.message);
         }
       }, (error: HttpErrorResponse) => {
-        console.log(error);
         this.isLoading = false;
         this.loadingBar.stop();
         if (error.status >= 400 && error.status <= 415) {
@@ -290,7 +290,6 @@ export class OfferComponent implements OnInit {
       // this.interest = interestperday * this.loanamount;
       // this.monthlyrepayment = (this.interest + this.loanamount + this.insurance + this.disbursementfees) / this.durationValue;
       this.loanamount = event.value;
-      console.log(this.loanamount);
       if (confirm('Are you sure you want to change loan amount?')) {
         this.calcRepayment();
       }
@@ -307,12 +306,10 @@ export class OfferComponent implements OnInit {
         duration: this.durationValue,
         amount: this.loanamount
       };
-      // console.log(json);
       this.loadingBar.start();
       this.isLoading = true;
       this.service.calculaterepayment(json)
         .subscribe((data: any) => {
-          console.log(data);
           this.loadingBar.stop();
           this.isLoading = false;
           if (data.status === 'success') {
@@ -325,7 +322,6 @@ export class OfferComponent implements OnInit {
           }
         },
         (error: HttpErrorResponse) => {
-          console.log(error);
           this.isLoading = false;
           this.loadingBar.stop();
           if (error.status >= 400 && error.status <= 415) {
@@ -349,7 +345,6 @@ export class OfferComponent implements OnInit {
           this.message.error(data.message);
         }
       }, (error: HttpErrorResponse) => {
-        console.log(error);
         this.isLoading = false;
         this.loadingBar.stop();
         if (error.status >= 400 && error.status <= 415) {
@@ -377,7 +372,6 @@ export class OfferComponent implements OnInit {
           this.message.error(data.message);
         }
       }, (error: HttpErrorResponse) => {
-        console.log(error);
         this.isLoading = false;
         this.loadingBar.stop();
         if (error.status >= 400 && error.status <= 415) {
@@ -442,7 +436,6 @@ export class OfferComponent implements OnInit {
         // }
 
         (error: HttpErrorResponse) => {
-          console.log(error);
           this.isLoading = false;
           this.loadingBar.stop();
           if (error.status >= 400 && error.status <= 415) {
@@ -477,7 +470,6 @@ export class OfferComponent implements OnInit {
           this.message.error(data.message);
         }
       }, (error: HttpErrorResponse) => {
-        console.log(error);
         this.isLoading = false;
         this.loadingBar.stop();
         if (error.status >= 400 && error.status <= 415) {
@@ -585,13 +577,8 @@ export class OfferComponent implements OnInit {
     }
 
     onOtpChange(event) {
-      console.log(event);
       if (event.length === 6) {
         this.otpCode = event;
       }
-    }
-
-    setValue(event) {
-      console.log('set value is' + event);
     }
 }

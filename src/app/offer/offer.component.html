@@ -21,14 +21,6 @@
         <div class="card shadow box-child-right">
           <div class="card-body">
             <div class="inner-content">
-              <!-- <nz-steps nzSize="small" [nzCurrent]="current" [nzDirection]="direction">
-              <nz-step nzTitle="Loan Offer"></nz-step>
-              <nz-step nzTitle="Accept Offer"></nz-step>
-              <nz-step nzTitle="Id" nzDescription="Upload"></nz-step>
-              <nz-step nzTitle="Passport" nzDescription="Upload"></nz-step>
-              <nz-step nzTitle="Confirm Offer"></nz-step>
-            </nz-steps> -->
-
               <div class="step-indicators-wrapper">
                 <div class="step-indicators"
                   [ngClass]="{'completed-step': current  > 0, 'current-step': current  === 0}">
@@ -58,18 +50,18 @@
                   [ngClass]="{'completed-step': current  > 4, 'current-step': current  === 4}">
                   5
                 </div>
-                <div class="stepper-spacer--2" [ngClass]="{'stepper-spacer-completed': current  > 3}">
+                <!-- <div class="stepper-spacer--2" [ngClass]="{'stepper-spacer-completed': current  > 3}">
                 </div>
                 <div class="step-indicators"
                   [ngClass]="{'completed-step': current  > 5, 'current-step': current  === 5}">
                   6
-                </div>
+                </div> -->
               </div>
               <div class="steps-content">
                 <ng-container *ngIf="current === 0">
                   <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
-                      <ng-container *ngIf="loanOfferLoaded">
+                      <ng-container *ngIf="loanOfferLoaded; else loadingLoan">
                         <ng-container *ngIf="loans; else noloan">
                           <nz-card class="success-card">
                             <p class="gray text-center card-title">We are pleased to inform you that your loan request has been
@@ -151,6 +143,12 @@
                           </nz-card>
                         </ng-template>
                       </ng-container>
+                      <ng-template #loadingLoan>
+                        <nz-card class="text-center">
+                          <i nz-icon nzType="loading" nzTheme="outline"></i>
+                          <p>Fetching loan details</p>
+                        </nz-card>
+                      </ng-template>
                     </div>
                   </div>
                 </ng-container>
@@ -278,7 +276,7 @@
                   </div>
                 </ng-container>
 
-                <ng-container *ngIf="current === 4">
+                <!-- <ng-container *ngIf="current === 4">
                   <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
 
@@ -289,11 +287,8 @@
                         <div nz-row nzGutter="16">
                           <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                             <nz-form-item>
-                              <!-- <nz-form-label class="float-left">Code</nz-form-label> -->
                               <nz-form-control nzHasFeedback nzErrorTip="Enter Code!">
                                 <ng-otp-input inputClass="form-control" containerClass="otp" (setValue)="setValue($event)" (onInputChange)="onOtpChange($event)"  [config]="config"></ng-otp-input>
-
-                                <!-- <input nzSize="large" type="text" formControlName="code" nz-input placeholder="Code" /> -->
                               </nz-form-control>
                             </nz-form-item>
                           </div>
@@ -305,9 +300,9 @@
                       </div>
                     </div>
                   </div>
-                </ng-container>
+                </ng-container> -->
 
-                <ng-container *ngIf="current === 5">
+                <ng-container *ngIf="current === 4">
                   <div nz-row nzType="flex" nzJustify="center" class="animate__animated animate__slideInRight animate__faster">
                     <div nz-col nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                       <nz-card>
@@ -382,12 +377,12 @@
               <span>Previous</span>
             </button>
             <button class="mt-sm-2 ml-md-auto" nz-button [nzLoading]="isLoading" nzSize="large" nzType="default"
-              (click)="next()" *ngIf="current < 5">
+              (click)="next()" *ngIf="current < 4">
               <span>{{current === 1? 'Continue' : current === 2 && !idCardUploadMessage? 'Skip' : current === 3 && !passportUploadMessage? 'Skip': 'Continue'}}</span>
               <i nz-icon nzType="right"></i>
             </button>
             <button class="mt-sm-2 ml-md-auto" nz-button [nzLoading]="isLoading" nzSize="large" nzType="primary"
-              (click)="done()" *ngIf="current === 5">
+              (click)="done()" *ngIf="current === 4">
               <span>Confirm</span>
             </button>
           </div>
