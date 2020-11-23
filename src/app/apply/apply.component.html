@@ -206,7 +206,7 @@
                               <nz-form-item>
                                 <!-- <nz-form-label class="float-left">DOB</nz-form-label> -->
                                 <nz-form-control nzErrorTip="Please select your D.O.B!">
-                                  <nz-date-picker [nzDisabledDate]="disabledDate" nzShowToday="false" nzSize="large"
+                                  <nz-date-picker [nzPlaceHolder]="'D.O.B'" [nzDisabledDate]="disabledDate" nzShowToday="false" nzSize="large"
                                     formControlName="dob" (change)="onChange($event)">
                                   </nz-date-picker>
                                 </nz-form-control>

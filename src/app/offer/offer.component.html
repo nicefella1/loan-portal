@@ -287,18 +287,21 @@
                           Please use the code that was sent to your phone number to confirm this loan offer
                         </h4>
                         <div nz-row nzGutter="16">
-                          <div nz-col class="gutter-row" nzXs="8" nzSm="8" nzMd="4" nzLg="4" nzXl="4" nzOffset="8">
+                          <div nz-col class="gutter-row" nzXs="24" nzSm="24" nzMd="24" nzLg="24" nzXl="24" nzOffset="0">
                             <nz-form-item>
                               <!-- <nz-form-label class="float-left">Code</nz-form-label> -->
                               <nz-form-control nzHasFeedback nzErrorTip="Enter Code!">
-                                <input nzSize="large" type="text" formControlName="code" nz-input placeholder="Code" />
+                                <ng-otp-input inputClass="form-control" containerClass="otp" (setValue)="setValue($event)" (onInputChange)="onOtpChange($event)"  [config]="config"></ng-otp-input>
+
+                                <!-- <input nzSize="large" type="text" formControlName="code" nz-input placeholder="Code" /> -->
                               </nz-form-control>
                             </nz-form-item>
                           </div>
                         </div>
                       </form>
-                      <div class="text-center my-2">
-                        <a (click)="skipCodeVerification()">I did not get any code</a>
+                      <div  class="text-center my-2">
+                        <a *ngIf="codeSent" (click)="skipCodeVerification()">I did not get any code</a>
+                        <p *ngIf="!codeSent">Please wait while we send code</p>
                       </div>
                     </div>
                   </div>

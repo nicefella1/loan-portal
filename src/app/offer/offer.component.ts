@@ -88,7 +88,18 @@ export class OfferComponent implements OnInit {
   loanhistory: any;
   loanresult: any;
   automateDetails: boolean;
+  codeStatus: string;
+  config = {
+    length: 6,
+    allowNumbersOnly: true,
+    inputClass: 'ant-input ant-input-lg',
+    containerClass: 'otp-wrapper'
+  };
+
+  otpCode: any;
   nzFilterOption = () => true;
+  codeSent: boolean;
+
   constructor(private fb: FormBuilder, private service: LoanApplyService,
               private message: NzMessageService, private loadingBar: LoadingBarService, private route: ActivatedRoute) {
       this.getScreenSize();
@@ -147,7 +158,7 @@ export class OfferComponent implements OnInit {
           const newDurationOptions = Object.assign({}, this.durationOptions);
           newDurationOptions.ceil = 12;
           // newOptions.ceil = data.loanamount;
-          newOptions.ceil = data.loan_application.loan_amount;
+          newOptions.ceil = data.loan_application.potential_loan_amount;
           this.durationOptions = newDurationOptions;
           this.options = newOptions;
           // this.setLoanRepayment();
@@ -166,6 +177,10 @@ export class OfferComponent implements OnInit {
     }
 
     pre(): void {
+      if (this.current === 5) {
+        this.codeSent = false;
+        this.sendPaystackCode();
+      }
       this.current -= 1;
     }
 
@@ -193,7 +208,10 @@ export class OfferComponent implements OnInit {
         this.sendPaystackCode();
       } else if (this.current === 4) {
         this.submitAuthorizationForm();
-        if (this.authorizationForm.invalid) {
+        // if (this.authorizationForm.invalid) {
+        //   return;
+        // }
+        if (this.otpCode.length < 6) {
           return;
         }
         this.confirmCreditCode();
@@ -203,13 +221,15 @@ export class OfferComponent implements OnInit {
     }
 
     skipCodeVerification() {
+      this.codeStatus = '3';
       return this.current += 1;
     }
     done(): void {
       const loan = {
         id: this.loanOfferId,
         loan_amount: this.loanamount,
-        duration: this.durationValue
+        duration: this.durationValue,
+        status: this.codeStatus
         // monthly_repayment: this.monthlyrepayment,
         // idcard: this.idCardUploadMessage ? this.idCardUploadMessage : '',
         // passport: this.passportUploadMessage ? this.passportUploadMessage : ''
@@ -248,6 +268,7 @@ export class OfferComponent implements OnInit {
         console.log(data);
         if (data.status === 'success') {
           // this.current += 1;
+          this.codeSent = true;
         } else {
           this.message.error(data.message);
         }
@@ -270,11 +291,15 @@ export class OfferComponent implements OnInit {
       // this.monthlyrepayment = (this.interest + this.loanamount + this.insurance + this.disbursementfees) / this.durationValue;
       this.loanamount = event.value;
       console.log(this.loanamount);
-      this.calcRepayment();
+      if (confirm('Are you sure you want to change loan amount?')) {
+        this.calcRepayment();
+      }
     }
     changeduration(event: ChangeContext) {
       this.durationValue = event.value;
-      this.calcRepayment();
+      if (confirm('Are you sure you want to change loan duration?')) {
+        this.calcRepayment();
+      }
     }
 
     calcRepayment() {
@@ -442,11 +467,12 @@ export class OfferComponent implements OnInit {
       const code = this.authorizationForm.get('code').value;
       this.loadingBar.start();
       this.isLoading = true;
-      this.service.confirmCreditCode(this.loanOfferId, code).subscribe((data: any) => {
+      this.service.confirmCreditCode(this.loanOfferId, this.otpCode).subscribe((data: any) => {
         this.loadingBar.complete();
         this.isLoading = false;
         if (data.status === 'success') {
           this.current += 1;
+          this.codeStatus = '11';
         } else {
           this.message.error(data.message);
         }
@@ -558,4 +584,14 @@ export class OfferComponent implements OnInit {
       this.bankAcountForm.patchValue({ amount: inputvalue });
     }
 
+    onOtpChange(event) {
+      console.log(event);
+      if (event.length === 6) {
+        this.otpCode = event;
+      }
+    }
+
+    setValue(event) {
+      console.log('set value is' + event);
+    }
 }

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { OfferRoutingModule } from './offer-routing.module';
 import { OfferComponent } from './offer.component';
 import { SharedModule } from '../shared/shared.module';
+import { NgOtpInputModule } from 'ng-otp-input';
 
 
 @NgModule({
@@ -11,6 +12,7 @@ import { SharedModule } from '../shared/shared.module';
   imports: [
     CommonModule,
     SharedModule,
+    NgOtpInputModule,
     OfferRoutingModule
   ]
 })

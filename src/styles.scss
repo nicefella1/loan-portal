@@ -44,9 +44,6 @@ a{
 		text-decoration: none;
 	}
 
-	&:visited{
-		// color: #F58634;
-	}
 }
 
 p{
@@ -63,11 +60,6 @@ input,select{
 }
 
 
-label,input,select{
-
-	// font-size: //TODO;
-
-}
 html, body{
     background-color: white;
     // margin: 0;
@@ -76,6 +68,14 @@ html, body{
   max-width: 1800px;
   width: 100%;
   min-height: 100vh;
+
+  &.otp-wrapper{
+    margin-top: 2rem;
+    width: unset !important;
+    height: unset !important;
+    min-height: unset !important;
+    text-align: center;
+  }
 }
 
 .box-left{
@@ -187,7 +187,8 @@ html, body{
 
 .steps-content {
   .card-title{
-    font-size: 2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
   }
 
 }
@@ -435,9 +436,6 @@ html, body{
   .steps-content {
     padding: 1.5rem;
 
-    .card-title{
-      font-size: 2.5rem;
-    }
   }
 
   .largefont {
@@ -513,6 +511,10 @@ html, body{
 
   .wrapper {
     background-image: linear-gradient(135deg, #f2f2f2 70%, #f56b2a 45%);
+
+    &.otp-wrapper{
+      background: none !important;
+    }
   }
 
   .w-md-50 {
