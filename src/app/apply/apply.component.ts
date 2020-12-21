@@ -366,7 +366,10 @@ export class ApplyComponent implements OnInit {
       if (data.returnstatus) {
         this.router.navigate([`/offer/${id}`]);
       } else {
-        this.message.error(data.message);
+        // this.message.error(data.message);
+        this.falseAutomate = true;
+        this.automate = false;
+        this.message.success(data.message);
       }
     }, (error: HttpErrorResponse) => {
       this.isLoading = false;
