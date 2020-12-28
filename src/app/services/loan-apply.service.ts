@@ -31,7 +31,8 @@ export class LoanApplyService {
     return this.http.post(`${environment.loanV2Url}${this.modulePath}/new/offer/details`, params);
   }
   viewLoanOffer(id) {
-    return this.http.post(`${environment.loanUrl}loan/offer/view`, { id });
+    // return this.http.post(`${environment.loanUrl}loan/offer/view`, { id });
+    return this.http.post(`${environment.loanV2Url}${this.modulePath}/offer/view`, {id});
   }
 
   verifyAccountDetails(bankcode, accountnumber) {
