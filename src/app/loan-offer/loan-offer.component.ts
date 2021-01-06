@@ -20,7 +20,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 })
 export class LoanOfferComponent implements OnInit {
   current = 0;
-  uploadUrl = `${environment.loanUrl}passport/upload`;
+  uploadUrl = `${environment.loanV2Url}loans/upload`;
   minDate = new Date('2001-12-31');
   duration = tenors;
   banks = banks.sort((a , b) => a.name.localeCompare(b.name));
@@ -196,7 +196,10 @@ viewLoanOffer() {
     // Create a FormData here to store files and other parameters.
     const formData = new FormData();
     // tslint:disable-next-line:no-any
-    formData.append('file[]', item.file as any, item.file.name as any);
+    // formData.append('file[]', item.file as any, item.file.name as any);
+    formData.append('file', item.file as any);
+      formData.append('type', this.current === 2 ? '0' : '1');
+      formData.append('id', this.loanOfferId);
     // tslint:disable-next-line: no-non-null-assertion
     const req = new HttpRequest('POST', item.action!, formData, {
       reportProgress: true,

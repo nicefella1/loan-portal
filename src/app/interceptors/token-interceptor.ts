@@ -6,22 +6,17 @@ import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-    constructor(private service: AuthService) {}
+    constructor() {}
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if (this.service.isLoggedIn()) {
-            const token = this.service.getAuthToken();
+        if (req.url.includes('loans/upload')) {
+            req.headers.delete('content-type');
+        } else {
             req = req.clone({
                 setHeaders: {
-                    Authorization: token
+                    'Content-Type': 'application/json',
                 }
             });
         }
-        return next.handle(req).pipe(tap((data: any) => {
-            if (data.body) {
-                if (data.body.status === 'error' && data.body.message === 'Authorization Failed, Please login to continue') {
-                    this.service.logOut();
-                }
-            }
-        }));
+        return next.handle(req);
     }
 }
