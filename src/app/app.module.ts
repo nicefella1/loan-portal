@@ -9,9 +9,11 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoadingBarModule } from '@ngx-loading-bar/core';
 
+import { NgxGoogleAnalyticsModule, NgxGoogleAnalyticsRouterModule } from 'ngx-google-analytics';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { TokenInterceptor } from './interceptors/token-interceptor';
+import { environment } from 'src/environments/environment';
 
 registerLocaleData(en);
 
@@ -22,6 +24,8 @@ registerLocaleData(en);
   imports: [
     LoadingBarModule,
     BrowserModule,
+    NgxGoogleAnalyticsModule.forRoot(environment.gtag),
+    NgxGoogleAnalyticsRouterModule,
     AppRoutingModule,
     NgZorroAntdModule,
     FormsModule,

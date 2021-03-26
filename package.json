@@ -25,6 +25,7 @@
     "jquery": "^3.5.0",
     "ng-otp-input": "^1.7.1",
     "ng-zorro-antd": "^8.5.2",
+    "ngx-google-analytics": "^11.2.0",
     "ng5-slider": "^1.2.4",
     "popper": "^1.0.1",
     "rxjs": "~6.5.4",

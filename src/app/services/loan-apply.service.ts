@@ -53,7 +53,8 @@ export class LoanApplyService {
   }
 
   confirmLoanOffer(loan) {
-    return this.http.post(`${environment.loanUrl}loan/finalize/new`, loan);
+    return this.http.post(`${environment.loanV2Url}loan/finalize/new`, loan);
+    // return this.http.post(`${environment.loanUrl}loan/finalize/new`, loan);
   }
 
   confirmCreditCode(id, code) {
@@ -63,7 +64,7 @@ export class LoanApplyService {
 
   confirmLoanAutoOffer(loan) {
     // return this.http.post(`${environment.loanUrl}loan/transaction/complete`, loan)
-    return this.http.post(`${environment.loanV2Url}${this.modulePath}/new/submit`, loan);
+    return this.http.post(`${environment.loanV2Url}loan/transaction/complete`, loan);
   }
 
   verifyOnPaystack(id) {
